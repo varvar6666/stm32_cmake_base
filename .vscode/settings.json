@@ -1,0 +1,26 @@
+{
+	"cmake.configureOnOpen": true,
+	"VsCodeTaskButtons.tasks": [
+        {
+            "label": "$(checklist) Build",
+            "task": "Build",
+            "tooltip": "🛠️ Start the \"build\" task"
+        },
+		{
+            "label": "$(clear-all) Clean build",
+            "task": "Clean project",
+            "tooltip": "🧹 Start a \"clean\" task"
+        },
+		{
+            "label": "$(run) Run",
+            "task": "flash",
+            "tooltip": "Build and run"
+        },
+		{
+            "label": "$(close) Full-Erase",
+            "task": "full chip erase",
+            "tooltip": "full chip erase"
+        },
+
+	],
+}

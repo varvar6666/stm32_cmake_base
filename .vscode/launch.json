@@ -1,0 +1,51 @@
+{
+  "version": "0.2.1",
+  "configurations": [
+	{
+		"cwd": "${workspaceFolder}",
+		"executable": "${workspaceFolder}/build/program.elf",
+		"device" : "STM32F446RE",
+		"name": "ST-Link",
+		// "serialNumber": "066CFF575383564867215114",
+		"request": "launch",
+		"type": "cortex-debug",
+		"runToEntryPoint": "main",
+		"showDevDebugOutput": "none",
+		"servertype": "stlink",
+		"liveWatch": {
+			"enabled": true,
+			"samplesPerSecond": 10
+		},
+		"stlinkPath": "C:/ST/STM32CubeIDE_1.14.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.win32_2.1.100.202310302101/tools/bin/ST-LINK_gdbserver.exe",
+		"stm32cubeprogrammer": "C:/ST/STM32CubeIDE_1.14.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.cubeprogrammer.win32_2.1.100.202311100844/tools/bin",
+		"armToolchainPath": "C:/ST/STM32CubeIDE_1.14.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.11.3.rel1.win32_1.1.100.202309141235/tools/bin",
+		"preLaunchTask": "Build",
+		"preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],
+		"svdPath": "${command:vscode-embedded.st.svd}/STM32F446.svd"
+	},
+	{
+		"name": "Launch",
+		"type": "cppdbg",
+		"request": "launch",
+		"cwd": "${workspaceFolder}",
+		"program": "${command:cmake.launchTargetPath}",
+		"MIMode": "gdb",
+		"miDebuggerPath": "${command:vscode-embedded.st.gdb}",
+		"miDebuggerServerAddress": "localhost:3333",
+		"debugServerPath": "${command:vscode-embedded.st.gdbserver}",
+		"debugServerArgs": "--stm32cubeprogrammer-path ${command:vscode-embedded.st.cubeprogrammer} --swd --port-number 3333",
+		"serverStarted": "Waiting for connection on port .*\\.\\.\\.",
+		"stopAtConnect": true,
+		"postRemoteConnectCommands": [
+		  {
+			"text": "load build/program.elf"
+		  }
+		],
+		"logging": {
+		  "engineLogging": true
+		},
+		"preLaunchTask": "Build",
+		"svdPath": "${command:vscode-embedded.st.svd}/STM32F446.svd"
+	  }
+  ]
+}
