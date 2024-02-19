@@ -23,7 +23,7 @@ project(${PROJECT_NAME} 	VERSION 1.0
 
 SET(CMAKE_CXX_STANDARD 20)
 
-set(linker_script "${CMAKE_CURRENT_LIST_DIR}/STM32F446RETX_FLASH.ld")
+set(linker_script "${CMAKE_CURRENT_LIST_DIR}/STM32F446RETX.ld")
 set(device_name "STM32F446xx")
 
 set(c_compile_options
@@ -60,7 +60,7 @@ set(link_flags
 	-static \
 	--specs=nano.specs \
 	-Wl,--start-group -lc -lm -Wl,--end-group \
-    -T D:/projects/STM/vs_cmake/STM32F446RETX.ld"
+    -T ${linker_script}"
 )
 
 add_compile_options("${c_compile_options}")
