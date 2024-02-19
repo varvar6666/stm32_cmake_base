@@ -13,7 +13,7 @@ set(GDB                 ${TOOLCHAIN_PATH}arm-none-eabi-gdb)
 set(SIZE                ${TOOLCHAIN_PATH}arm-none-eabi-size)
 set(CMAKE_ASM_COMPILER  ${TOOLCHAIN_PATH}arm-none-eabi-gcc)
 
-# set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 set(PROJECT_NAME vs_cmake)
 
