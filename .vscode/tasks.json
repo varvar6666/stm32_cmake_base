@@ -31,7 +31,7 @@
 		"command": "STM32_Programmer_CLI.exe",
 		"args": [
 			"-c port=SWD freq=4000",
-			"-w ${workspaceFolder}/build/program.elf 0x0800000",
+			"-w ${workspaceFolder}/build/vs_cmake.elf 0x0800000",
 			"-g"
 		],
 		"options": {

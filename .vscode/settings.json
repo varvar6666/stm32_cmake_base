@@ -1,5 +1,6 @@
 {
 	"cmake.configureOnOpen": true,
+	"cortex-debug.armToolchainPath": "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/13.2 Rel1/bin",
 	"VsCodeTaskButtons.tasks": [
         {
             "label": "$(checklist) Build",

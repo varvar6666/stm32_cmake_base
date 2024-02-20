@@ -3,7 +3,7 @@
   "configurations": [
 	{
 		"cwd": "${workspaceFolder}",
-		"executable": "${workspaceFolder}/build/program.elf",
+		"executable": "${workspaceFolder}/build/vs_cmake.elf",
 		"device" : "STM32F446RE",
 		"name": "ST-Link",
 		// "serialNumber": "066CFF575383564867215114",
@@ -18,7 +18,6 @@
 		},
 		"stlinkPath": "C:/ST/STM32CubeIDE_1.14.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.win32_2.1.100.202310302101/tools/bin/ST-LINK_gdbserver.exe",
 		"stm32cubeprogrammer": "C:/ST/STM32CubeIDE_1.14.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.cubeprogrammer.win32_2.1.100.202311100844/tools/bin",
-		"armToolchainPath": "C:/ST/STM32CubeIDE_1.14.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.11.3.rel1.win32_1.1.100.202309141235/tools/bin",
 		"preLaunchTask": "Build",
 		"preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],
 		"svdPath": "${command:vscode-embedded.st.svd}/STM32F446.svd"

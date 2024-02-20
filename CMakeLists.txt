@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
+################################## BASE SETUP ###############################################################
+include(base_setup.cmake)
 
+# message(STATUS "ttt \"${TEST}\"")
 ################################## COMPILER SETUP ###############################################################
 file(GLOB TOOLCHAIN_DIRECTORIES
 "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/*/bin/"
@@ -48,45 +51,47 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 ################################## PORJECT SETUP ###############################################################
 
-set(PROJECT_NAME vs_cmake)
-
-project(${PROJECT_NAME} 	VERSION 1.0
-							DESCRIPTION "Very nice project"
+project(${PROJECT_NAME} 	VERSION ${VER}
+							DESCRIPTION ${DESC}
 							LANGUAGES C CXX ASM)
 
-SET(CMAKE_CXX_STANDARD 20)
+SET(CMAKE_CXX_STANDARD ${CXX_STD_VERSION})
 
 add_executable("${PROJECT_NAME}")
-
-set(device_name "STM32F446xx")
 
 ################################## TARGET DEFINITIONS ###############################################################
 
 target_compile_definitions(
 	${PROJECT_NAME} PRIVATE
 	"DEBUG"
-	"STM32F446xx"
+	${DEVICE}
 )
 
 ################################## TARGET INCLUDE ###############################################################
 
-file(GLOB_RECURSE HEADERS "Drivers/CMSIS/Include/*.h"  "Drivers/CMSIS/Device/ST/STM32F4xx/Include/*.h" "Drivers/src/*.hpp" "inc/*.hpp")
-set (INCLUDE_DIRS "")
-foreach (_headerFile ${HEADERS})
-    get_filename_component(_dir ${_headerFile} PATH)
-    list (APPEND INCLUDE_DIRS ${_dir})
-endforeach()
-list(REMOVE_DUPLICATES INCLUDE_DIRS)
+# file(GLOB_RECURSE HEADERS "Drivers/CMSIS/Include/*.h"  "Drivers/CMSIS/Device/ST/STM32F4xx/Include/*.h" "Drivers/src/*.hpp" "inc/*.hpp")
+# set (INCLUDE_DIRS "")
+# foreach (_headerFile ${HEADERS})
+#     get_filename_component(_dir ${_headerFile} PATH)
+#     list (APPEND INCLUDE_DIRS ${_dir})
+# endforeach()
+# list(REMOVE_DUPLICATES INCLUDE_DIRS)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS})
+# target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS})
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${inc_dirs})
 
 
 ################################## TARGET SOURCES ###############################################################
 
-file(GLOB SOURCES  "src/*.с" "src/*.cpp" "Drivers/src/*.cpp" "Startup/*.s")
+set(SRCs "")
+foreach (_srcdir ${src_dirs})
+	file(GLOB _src_c ${_srcdir}/*.c ${_srcdir}/*.cpp ${_srcdir}/*.s)
+	list (APPEND SRCs ${_src_c})
+endforeach()
 
 target_sources(
-	${PROJECT_NAME} PRIVATE	${SOURCES}
+	${PROJECT_NAME} PRIVATE	${SRCs}
 )
 
 ################################## COMPILE OPTIONS ###############################################################
