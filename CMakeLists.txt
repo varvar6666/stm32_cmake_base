@@ -1,19 +1,52 @@
 cmake_minimum_required(VERSION 3.20)
 
-# Specify C, C++ and ASM compilers
-set(CMAKE_SYSTEM_NAME "Generic")
-SET(CMAKE_C_COMPILER    ${TOOLCHAIN_PATH}arm-none-eabi-gcc)
-SET(CMAKE_CXX_COMPILER  ${TOOLCHAIN_PATH}arm-none-eabi-g++)
-set(AS                  ${TOOLCHAIN_PATH}arm-none-eabi-as)
-set(AR                  ${TOOLCHAIN_PATH}arm-none-eabi-ar)
-set(OBJCOPY             ${TOOLCHAIN_PATH}arm-none-eabi-objcopy)
-set(OBJDUMP             ${TOOLCHAIN_PATH}arm-none-eabi-objdump)
-set(SIZE                ${TOOLCHAIN_PATH}arm-none-eabi-size)
-set(GDB                 ${TOOLCHAIN_PATH}arm-none-eabi-gdb)
-set(SIZE                ${TOOLCHAIN_PATH}arm-none-eabi-size)
-set(CMAKE_ASM_COMPILER  ${TOOLCHAIN_PATH}arm-none-eabi-gcc)
+################################## COMPILER SETUP ###############################################################
+file(GLOB TOOLCHAIN_DIRECTORIES
+"C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/*/bin/"
+"C:/ST/STM32CubeIDE_*/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.*/tools/bin/"
+"/opt/st/stm32cubeide_*/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.*/tools/bin/"
+"/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.*/tools/bin/"
+)
+
+list(LENGTH TOOLCHAIN_DIRECTORIES TOOLCHAIN_DIRECTORIES_COUNT)
+
+if(TOOLCHAIN_DIRECTORIES_COUNT LESS 1)
+    message(WARNING "Could not find an STM32CubeIDE installation. Falling back to tools available on PATH.")
+else()
+    list(GET TOOLCHAIN_DIRECTORIES 0 TOOLCHAIN_DIRECTORY)
+    if (TOOLCHAIN_DIRECTORIES_COUNT GREATER 1)
+        message(STATUS "Found multiple STM32CubeIDE installations. Using \"${TOOLCHAIN_DIRECTORY}\".")
+    endif()
+endif()
+
+if(WIN32)
+    set(TOOLCHAIN_SUFFIX ".exe")
+endif()
+
+set(CMAKE_SYSTEM_NAME               Generic)
+set(CMAKE_SYSTEM_PROCESSOR          arm)
+
+set(TOOLCHAIN_PREFIX                "arm-none-eabi-")
+if(DEFINED TOOLCHAIN_DIRECTORY)
+    set(TOOLCHAIN_PREFIX            "${TOOLCHAIN_DIRECTORY}/${TOOLCHAIN_PREFIX}")
+endif()
+set(FLAGS                           "-fdata-sections -ffunction-sections --specs=nano.specs -Wl,--gc-sections")
+set(ASM_FLAGS                       "-x assembler-with-cpp")
+set(CPP_FLAGS                       "-fno-rtti -fno-exceptions -fno-threadsafe-statics")
+
+set(CMAKE_C_COMPILER                ${TOOLCHAIN_PREFIX}gcc${TOOLCHAIN_SUFFIX} ${FLAGS})
+set(CMAKE_ASM_COMPILER              ${CMAKE_C_COMPILER} ${ASM_FLAGS})
+set(CMAKE_CXX_COMPILER              ${TOOLCHAIN_PREFIX}g++${TOOLCHAIN_SUFFIX} ${FLAGS} ${CPP_FLAGS})
+set(CMAKE_OBJCOPY                   ${TOOLCHAIN_PREFIX}objcopy${TOOLCHAIN_SUFFIX})
+set(CMAKE_SIZE                      ${TOOLCHAIN_PREFIX}size${TOOLCHAIN_SUFFIX})
+
+set(CMAKE_EXECUTABLE_SUFFIX_ASM     ".elf")
+set(CMAKE_EXECUTABLE_SUFFIX_C       ".elf")
+set(CMAKE_EXECUTABLE_SUFFIX_CXX     ".elf")
 
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+
+################################## PORJECT SETUP ###############################################################
 
 set(PROJECT_NAME vs_cmake)
 
@@ -23,78 +56,83 @@ project(${PROJECT_NAME} 	VERSION 1.0
 
 SET(CMAKE_CXX_STANDARD 20)
 
-set(linker_script "${CMAKE_CURRENT_LIST_DIR}/STM32F446RETX.ld")
+add_executable("${PROJECT_NAME}")
+
 set(device_name "STM32F446xx")
 
-set(c_compile_options
-	# CPU specific
-	"-mcpu=cortex-m4"
-	"-mfloat-abi=hard"
-	"-mthumb"
-	# Non-CPU specific
-	"--specs=nano.specs"
-	"-ffunction-sections"
-	"-fdata-sections"
-	"-fstack-usage"
-	# Other options
-	"-g3"
-	"-c"
-	"-Os"
-	"-Wall"
-)
-	
-set(compile_definitions "${device_name}")
-if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-	list(APPEND compile_definitions "DEBUG" "_DEBUG")
-else()
-	list(APPEND compile_definitions "NDEBUG")
-endif()
-# Linker script path
-# file(GLOB_RECURSE LINKER_SCRIPT *.ld)
+################################## TARGET DEFINITIONS ###############################################################
 
-set(link_flags
-	"-mcpu=cortex-m4 \
-	-mfloat-abi=hard \
-	-Wl,-Map=\"${PROJECT_NAME}.map\" \
-	-Wl,--gc-sections \
-	-static \
-	--specs=nano.specs \
-	-Wl,--start-group -lc -lm -Wl,--end-group \
-    -T ${linker_script}"
+target_compile_definitions(
+	${PROJECT_NAME} PRIVATE
+	"DEBUG"
+	"STM32F446xx"
 )
 
-add_compile_options("${c_compile_options}")
-add_compile_definitions("${compile_definitions}")
+################################## TARGET INCLUDE ###############################################################
 
-
-
-################################## Source code ###############################################################
-# Retrieve all sources # "platforms/${FAMILY}/Startup/*.s"
-# file(GLOB SOURCES  "src/*.с" "src/*.cpp")
-#Retrieve all locations of headers
-file(GLOB_RECURSE HEADERS "Drivers/CMSIS/Include/*.h"  "Drivers/CMSIS/Device/ST/STM32F4xx/Include/*.h")
+file(GLOB_RECURSE HEADERS "Drivers/CMSIS/Include/*.h"  "Drivers/CMSIS/Device/ST/STM32F4xx/Include/*.h" "Drivers/src/*.hpp" "inc/*.hpp")
 set (INCLUDE_DIRS "")
 foreach (_headerFile ${HEADERS})
     get_filename_component(_dir ${_headerFile} PATH)
     list (APPEND INCLUDE_DIRS ${_dir})
 endforeach()
 list(REMOVE_DUPLICATES INCLUDE_DIRS)
-include_directories(${INCLUDE_DIRS})
 
-# link_directories(${ARM_LIB})
-################################## Source code END ###########################################################
+target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS})
 
-# message(STATUS "src \"${SOURCES}\"")
 
-set(SOURCES "src/main.cpp" "Startup/startup_stm32f446retx.s")# "src/startup.c")
-add_executable("${PROJECT_NAME}" ${SOURCES} ${LINKER_SCRIPT})
-set_target_properties("${PROJECT_NAME}" PROPERTIES LINK_FLAGS "${link_flags}")
+################################## TARGET SOURCES ###############################################################
 
-# message(STATUS "build \"${CMAKE_BUILD_TYPE}\"")
+file(GLOB SOURCES  "src/*.с" "src/*.cpp" "Drivers/src/*.cpp" "Startup/*.s")
 
-# The OBJCOPY utility will separate the EEPROM section from the main program
-add_custom_command(TARGET "${PROJECT_NAME}" POST_BUILD
-	COMMAND "${CMAKE_OBJCOPY}" ARGS -j .eeprom "$<TARGET_FILE:${PROJECT_NAME}>" -O ihex "eeprom.hex"
-	COMMAND "${CMAKE_OBJCOPY}" ARGS -R .eeprom "$<TARGET_FILE:${PROJECT_NAME}>" "program.elf"
-	BYPRODUCTS "eeprom.hex" "program.elf"
+target_sources(
+	${PROJECT_NAME} PRIVATE	${SOURCES}
 )
+
+################################## COMPILE OPTIONS ###############################################################
+
+target_compile_options(
+	${PROJECT_NAME} PRIVATE
+	# CPU specific
+	"-mcpu=cortex-m4"
+	"-mfloat-abi=hard"
+	"-mthumb"
+	"-mfpu=fpv4-sp-d16"
+	# Other options
+	"-g3"
+	"-c"
+	"-Os"
+	"-Wall"
+	"-Wno-deprecated"
+)
+
+################################## LINK OPTIONS ###############################################################
+
+set(linker_script "${CMAKE_CURRENT_LIST_DIR}/STM32F446RETX.ld")
+
+target_link_options(
+	${PROJECT_NAME} PRIVATE
+	"-mcpu=cortex-m4"
+	"-mfpu=fpv4-sp-d16"
+	"-mfloat-abi=hard"
+	-T ${linker_script}
+)
+
+################################## POST ###############################################################
+
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${PROJECT_NAME}>
+)
+
+# add_custom_command(
+#     TARGET ${PROJECT_NAME} POST_BUILD
+#     COMMAND ${CMAKE_OBJCOPY} -O ihex
+#     $<TARGET_FILE:${PROJECT_NAME}> ${PROJECT_NAME}.hex
+# )
+
+# add_custom_command(
+#     TARGET ${PROJECT_NAME} POST_BUILD
+#     COMMAND ${CMAKE_OBJCOPY} -O binary
+#     $<TARGET_FILE:${PROJECT_NAME}> ${PROJECT_NAME}.bin
+# )
