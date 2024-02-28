@@ -1,13 +1,21 @@
-#include <stdint.h>
-#include "stm32f446xx.h"
+#include <main.hpp>
 
 int main()
 {
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
-	GPIOA->MODER |= 1 << 5*2;
+	System_F4::Init();
+
+	NUCLEO_LED.SetUp(PIN::TYPE::OUTPUT_PushPull);
+
+	uint32_t tick = System_F4::GetTick();
+	uint32_t tick_now;
 	for(;;)
 	{
-		for(uint32_t t = 0;t < 1000000;t++){};
-		GPIOA->ODR ^= 1 << 5;
+
+		tick_now = System_F4::GetTick();
+		if((tick_now - tick) > 500)
+		{
+			tick = tick_now;
+			NUCLEO_LED.TogglePin_BB();
+		}
 	}
 }
