@@ -1,0 +1,3 @@
+[submodule "Drivers"]
+	path = Drivers
+	url = git@github.com:varvar6666/STM32_Drivers_CPP.git

@@ -13,6 +13,11 @@
             "tooltip": "🧹 Start a \"clean\" task"
         },
 		{
+            "label": "$(output) Config",
+            "task": "config",
+            "tooltip": "Config"
+        },
+		{
             "label": "$(run) Run",
             "task": "flash",
             "tooltip": "Build and run"

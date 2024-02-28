@@ -4,7 +4,8 @@ set(PROJECT_NAME vs_cmake)
 set(CXX_STD_VERSION 20)
 set(VER 1.0)
 set(DESC "Base for STM32 cmake")
-set(DEVICE "STM32F446xx")
+set(DEVICE_SERIES	"STM32F446xx")
+set(DEVICE 			"STM32F446RE")
 
 set(inc_dirs 
 	"inc/"	

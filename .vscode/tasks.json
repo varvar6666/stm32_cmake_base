@@ -2,29 +2,35 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build",
-      "type": "cmake",
-      "command": "build",
-      "problemMatcher": "$gcc",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
-    },
-	{
-		"type": "shell",
-		"label": "Clean project",
-		"command": "cmake",
-		"args": ["--build", "${command:cmake.buildDirectory}", "--target", "clean"],
-		"options": {
-			"cwd": "${workspaceFolder}"
-		},
+		"label": "Build",
+		"type": "cmake",
+		"command": "build",
+		"problemMatcher": "$gcc",
 		"group": {
-			"kind": "build",
-			"isDefault": true
+		  "kind": "build",
+		  "isDefault": true
+		}
+	  },
+	  {
+		  "label": "Clean project",
+		  "type": "cmake",
+		  "command": "clean",
+		  "problemMatcher": "$gcc",
+		  "group": {
+			  "kind": "build",
+			  "isDefault": true
 		  },
-		"problemMatcher": []
-	},
+	  },
+	  {
+		  "type": "cmake",
+		  "command": "configure",
+		  "label": "config",
+		  "problemMatcher": "$gcc",
+		  "group": {
+			  "kind": "build",
+			  "isDefault": true
+		  },
+	  },
 	{
 		"type": "shell",
 		"label": "flash",
