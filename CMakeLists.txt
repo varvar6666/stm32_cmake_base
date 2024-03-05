@@ -107,7 +107,7 @@ target_compile_options(
 	# Other options
 	"-g3"
 	"-c"
-	"-Os"
+	"-O0"
 	"-Wall"
 	"-Wno-deprecated"
 )
