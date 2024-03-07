@@ -114,13 +114,12 @@ target_compile_options(
 
 ################################## LINK OPTIONS ###############################################################
 
-set(linker_script "${CMAKE_CURRENT_LIST_DIR}/STM32F446RETX.ld")
-
 target_link_options(
 	${PROJECT_NAME} PRIVATE
 	"-mcpu=cortex-m4"
 	"-mfpu=fpv4-sp-d16"
 	"-mfloat-abi=hard"
+	${linker_params}
 	-T ${linker_script}
 )
 

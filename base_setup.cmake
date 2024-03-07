@@ -20,3 +20,6 @@ set(src_dirs
 	"Startup/"
 	)
 
+set(linker_script "${CMAKE_CURRENT_LIST_DIR}/STM32F446RETX.ld")
+set(linker_params "-Wl,--no-warn-rwx-segment")
+

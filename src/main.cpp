@@ -1,5 +1,6 @@
 #include <main.hpp>
 
+
 int main()
 {
 	System_F4::Init();
@@ -12,7 +13,7 @@ int main()
 	{
 
 		tick_now = System_F4::GetTick();
-		if((tick_now - tick) > 500)
+		if((tick_now - tick) > 200)
 		{
 			tick = tick_now;
 			NUCLEO_LED.TogglePin_BB();
