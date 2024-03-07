@@ -29,4 +29,7 @@
         },
 
 	],
+	"cmake.configureSettings": {
+		"prj_name": "${workspaceFolderBasename}"
+	}
 }

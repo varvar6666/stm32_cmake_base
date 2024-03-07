@@ -1,5 +1,5 @@
 
-set(PROJECT_NAME vs_cmake)
+set(PROJECT_NAME ${prj_name})
 
 set(CXX_STD_VERSION 20)
 set(VER 1.0)
@@ -12,14 +12,15 @@ set(inc_dirs
 	"Drivers/CMSIS/Include/"
 	"Drivers/CMSIS/Device/ST/STM32F4xx/Include/"
 	"Drivers/src/"
+	"module/"
 	)
 
 set(src_dirs
 	"src/"
 	"Drivers/src/"
 	"Startup/"
+	"module/"
 	)
 
 set(linker_script "${CMAKE_CURRENT_LIST_DIR}/STM32F446RETX.ld")
 set(linker_params "-Wl,--no-warn-rwx-segment")
-

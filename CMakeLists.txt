@@ -141,3 +141,6 @@ add_custom_command(
 #     COMMAND ${CMAKE_OBJCOPY} -O binary
 #     $<TARGET_FILE:${PROJECT_NAME}> ${PROJECT_NAME}.bin
 # )
+
+################################## POST ###############################################################
+message(STATUS "Project Name: ${PROJECT_NAME}")
