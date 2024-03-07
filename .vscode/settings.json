@@ -1,6 +1,7 @@
 {
 	"cmake.configureOnOpen": true,
 	"cortex-debug.armToolchainPath": "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/13.2 Rel1/bin",
+	"cortex-debug.stlinkPath.windows": "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin",
 	"VsCodeTaskButtons.tasks": [
         {
             "label": "$(checklist) Build",

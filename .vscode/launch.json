@@ -3,9 +3,10 @@
   "configurations": [
 	{
 		"cwd": "${workspaceFolder}",
-		"executable": "${workspaceFolder}/build/vs_cmake.elf",
+		// "executable": "${workspaceFolder}/build/${workspaceFolderBasename}.elf",
+		"executable": "${command:cmake.launchTargetPath}",
 		"device" : "STM32F446RE",
-		"name": "ST-Link",
+		"name": "ST-Link Launch",
 		// "serialNumber": "066CFF575383564867215114",
 		"request": "launch",
 		"type": "cortex-debug",
@@ -17,10 +18,32 @@
 			"samplesPerSecond": 10
 		},
 		"stlinkPath": "C:/ST/STM32CubeIDE_1.14.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.win32_2.1.100.202310302101/tools/bin/ST-LINK_gdbserver.exe",
-		"stm32cubeprogrammer": "C:/ST/STM32CubeIDE_1.14.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.cubeprogrammer.win32_2.1.100.202311100844/tools/bin",
 		"preLaunchTask": "Build",
 		"preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],
-		"svdPath": "${command:vscode-embedded.st.svd}/STM32F446.svd"
+		// "svdPath": "${command:vscode-embedded.st.svd}/STM32F446.svd"
+		"svdPath": "${workspaceFolder}/Drivers/SVD/STM32F4_svd_v2.0/STM32F446.svd"
+	},
+	{
+		"cwd": "${workspaceFolder}",
+		// "executable": "${workspaceFolder}/build/${workspaceFolderBasename}.elf",
+		"executable": "${command:cmake.launchTargetPath}",
+		"device" : "STM32F446RE",
+		"name": "ST-Link Attach",
+		// "serialNumber": "066CFF575383564867215114",
+		"request": "attach",
+		"type": "cortex-debug",
+		"runToEntryPoint": "main",
+		"showDevDebugOutput": "none",
+		"servertype": "stlink",
+		"liveWatch": {
+			"enabled": true,
+			"samplesPerSecond": 10
+		},
+		"stlinkPath": "C:/ST/STM32CubeIDE_1.14.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.win32_2.1.100.202310302101/tools/bin/ST-LINK_gdbserver.exe",
+		"preLaunchTask": "Build",
+		"preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],
+		// "svdPath": "${command:vscode-embedded.st.svd}/STM32F446.svd"
+		"svdPath": "${workspaceFolder}/Drivers/SVD/STM32F4_svd_v2.0/STM32F446.svd"
 	},
 	{
 		"name": "Launch",
