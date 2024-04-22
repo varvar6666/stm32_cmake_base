@@ -1,6 +1,5 @@
 #include <main.hpp>
 
-
 int main()
 {
 	System_F4::Init();
