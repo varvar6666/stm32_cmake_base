@@ -13,14 +13,12 @@ set(inc_dirs
 	"Drivers/CMSIS/Include/"
 	"Drivers/CMSIS/Device/ST/STM32F4xx/Include/"
 	"Drivers/src/"
-	"module/"
 	)
 
 set(src_dirs
 	"src/"
 	"Drivers/src/"
 	"Startup/"
-	"module/"
 	)
 
 set(linker_script "${CMAKE_CURRENT_LIST_DIR}/STM32F446RETX.ld")
