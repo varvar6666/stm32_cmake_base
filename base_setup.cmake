@@ -4,11 +4,12 @@ set(PROJECT_NAME ${prj_name})
 set(CXX_STD_VERSION 20)
 set(VER 1.0)
 set(DESC "Base for STM32 cmake")
+set(DEVICE_FAMILY	"STM32F4")
 set(DEVICE_SERIES	"STM32F446xx")
 set(DEVICE 			"STM32F446RE")
 
 set(inc_dirs 
-	"inc/"	
+	"inc/"
 	"Drivers/CMSIS/Include/"
 	"Drivers/CMSIS/Device/ST/STM32F4xx/Include/"
 	"Drivers/src/"

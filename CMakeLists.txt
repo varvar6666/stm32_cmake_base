@@ -64,8 +64,9 @@ add_executable("${PROJECT_NAME}")
 target_compile_definitions(
 	${PROJECT_NAME} PRIVATE
 	"DEBUG"
+	${DEVICE_FAMILY}
 	${DEVICE_SERIES}
-	${DEVICE}	
+	${DEVICE}
 )
 
 ################################## TARGET INCLUDE ###############################################################
