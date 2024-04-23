@@ -10,14 +10,14 @@ set(DEVICE 			"STM32F446RE")
 
 set(inc_dirs 
 	"inc/"
-	"Drivers/CMSIS/Include/"
-	"Drivers/CMSIS/Device/ST/STM32F4xx/Include/"
-	"Drivers/src/"
+	"../Drivers/CMSIS/Include/"
+	"../Drivers/CMSIS/Device/ST/STM32F4xx/Include/"
+	"../Drivers/src/"
 	)
 
 set(src_dirs
 	"src/"
-	"Drivers/src/"
+	"../Drivers/src/"
 	"Startup/"
 	)
 
