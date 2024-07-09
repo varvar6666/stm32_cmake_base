@@ -120,6 +120,7 @@ target_link_options(
 	"-mcpu=cortex-m4"
 	"-mfpu=fpv4-sp-d16"
 	"-mfloat-abi=hard"
+	"-Wl,--print-memory-usage"
 	${linker_params}
 	-T ${linker_script}
 )
