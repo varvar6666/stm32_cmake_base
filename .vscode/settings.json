@@ -8,11 +8,11 @@
 	"cortex-debug.stlinkPath.windows": "C:/ST/STM32CubeIDE_1.14.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.win32_2.1.100.202310302101/tools/bin/ST-LINK_gdbserver.exe",
 	"cortex-debug.openocdPath": "C:/openocd/bin/openocd.exe",
 	"VsCodeTaskButtons.tasks": [
-        {
-            "label": "$(checklist) Build",
-            "task": "Build",
-            "tooltip": "🛠️ Start the \"build\" task"
-        },
+        // {
+        //     "label": "$(checklist) Build",
+        //     "task": "Build",
+        //     "tooltip": "🛠️ Start the \"build\" task"
+        // },
 		{
             "label": "$(clear-all) Clean build",
             "task": "Clean project",
