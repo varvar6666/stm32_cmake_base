@@ -3,9 +3,12 @@
 	"cmake.configureSettings": {
 		"prj_name": "${workspaceFolderBasename}"
 	},
-	"cortex-debug.armToolchainPath.windows": "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/13.2 Rel1/bin",
-	"cortex-debug.stm32cubeprogrammer.windows": "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin",
-	"cortex-debug.stlinkPath.windows": "C:/ST/STM32CubeIDE_1.14.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.win32_2.1.100.202310302101/tools/bin/ST-LINK_gdbserver.exe",
+	"cmake.configureArgs": [
+        "-G Ninja",
+	],
+	// "cortex-debug.armToolchainPath.windows": "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/13.2 Rel1/bin",
+	// "cortex-debug.stm32cubeprogrammer.windows": "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin",
+	// "cortex-debug.stlinkPath.windows": "C:/ST/STM32CubeIDE_1.14.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.win32_2.1.100.202310302101/tools/bin/ST-LINK_gdbserver.exe",
 	"cortex-debug.openocdPath": "C:/openocd/bin/openocd.exe",
 	"VsCodeTaskButtons.tasks": [
         // {

@@ -4,23 +4,36 @@ include(base_setup.cmake)
 
 # message(STATUS "ttt \"${TEST}\"")
 ################################## COMPILER SETUP ###############################################################
-file(GLOB TOOLCHAIN_DIRECTORIES
-"C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/*/bin/"
-"C:/ST/STM32CubeIDE_*/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.*/tools/bin/"
-"/opt/st/stm32cubeide_*/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.*/tools/bin/"
-"/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.*/tools/bin/"
-)
+# file(GLOB TOOLCHAIN_DIRECTORIES
+# "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/*/bin/"
+# "C:/ST/STM32CubeIDE_*/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.*/tools/bin/"
+# "/opt/st/stm32cubeide_*/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.*/tools/bin/"
+# "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.*/tools/bin/"
+# )
 
-list(LENGTH TOOLCHAIN_DIRECTORIES TOOLCHAIN_DIRECTORIES_COUNT)
+# list(LENGTH TOOLCHAIN_DIRECTORIES TOOLCHAIN_DIRECTORIES_COUNT)
 
-if(TOOLCHAIN_DIRECTORIES_COUNT LESS 1)
-    message(WARNING "Could not find an STM32CubeIDE installation. Falling back to tools available on PATH.")
-else()
-    list(GET TOOLCHAIN_DIRECTORIES 0 TOOLCHAIN_DIRECTORY)
-    if (TOOLCHAIN_DIRECTORIES_COUNT GREATER 1)
-        message(STATUS "Found multiple STM32CubeIDE installations. Using \"${TOOLCHAIN_DIRECTORY}\".")
-    endif()
+# if(TOOLCHAIN_DIRECTORIES_COUNT LESS 1)
+#     message(WARNING "Could not find an STM32CubeIDE installation. Falling back to tools available on PATH.")
+# else()
+#     list(GET TOOLCHAIN_DIRECTORIES 0 TOOLCHAIN_DIRECTORY)
+#     if (TOOLCHAIN_DIRECTORIES_COUNT GREATER 1)
+#         message(STATUS "Found multiple STM32CubeIDE installations. Using \"${TOOLCHAIN_DIRECTORY}\".")
+#     endif()
+# endif()
+execute_process(COMMAND "arm-none-eabi-gcc.exe" "--version" RESULT_VARIABLE ret)
+
+if(ret EQUAL 0)
+MESSAGE( STATUS "using GCC" )
 endif()
+
+message(STATUS "Compiler path: ${CMAKE_CXX_COMPILER}")
+message(STATUS "Compiler ID: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "Compiler version: ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS "Compiler is part of GCC: ${CMAKE_COMPILER_IS_GNUCXX}")
+
+message(STATUS "start")
+
 
 if(WIN32)
     set(TOOLCHAIN_SUFFIX ".exe")
@@ -56,6 +69,11 @@ project(${PROJECT_NAME} 	VERSION ${VER}
 							LANGUAGES C CXX ASM)
 
 SET(CMAKE_CXX_STANDARD ${CXX_STD_VERSION})
+
+message(STATUS "Compiler path: ${CMAKE_CXX_COMPILER}")
+message(STATUS "Compiler ID: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "Compiler version: ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS "Compiler is part of GCC: ${CMAKE_COMPILER_IS_GNUCXX}")
 
 add_executable("${PROJECT_NAME}")
 
