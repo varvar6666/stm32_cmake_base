@@ -1,66 +1,8 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.22)
 ################################## BASE SETUP ###############################################################
-include(base_setup.cmake)
 
-# message(STATUS "ttt \"${TEST}\"")
-################################## COMPILER SETUP ###############################################################
-# file(GLOB TOOLCHAIN_DIRECTORIES
-# "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/*/bin/"
-# "C:/ST/STM32CubeIDE_*/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.*/tools/bin/"
-# "/opt/st/stm32cubeide_*/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.*/tools/bin/"
-# "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.*/tools/bin/"
-# )
-
-# list(LENGTH TOOLCHAIN_DIRECTORIES TOOLCHAIN_DIRECTORIES_COUNT)
-
-# if(TOOLCHAIN_DIRECTORIES_COUNT LESS 1)
-#     message(WARNING "Could not find an STM32CubeIDE installation. Falling back to tools available on PATH.")
-# else()
-#     list(GET TOOLCHAIN_DIRECTORIES 0 TOOLCHAIN_DIRECTORY)
-#     if (TOOLCHAIN_DIRECTORIES_COUNT GREATER 1)
-#         message(STATUS "Found multiple STM32CubeIDE installations. Using \"${TOOLCHAIN_DIRECTORY}\".")
-#     endif()
-# endif()
-execute_process(COMMAND "arm-none-eabi-gcc.exe" "--version" RESULT_VARIABLE ret)
-
-if(ret EQUAL 0)
-MESSAGE( STATUS "using GCC" )
-endif()
-
-message(STATUS "Compiler path: ${CMAKE_CXX_COMPILER}")
-message(STATUS "Compiler ID: ${CMAKE_CXX_COMPILER_ID}")
-message(STATUS "Compiler version: ${CMAKE_CXX_COMPILER_VERSION}")
-message(STATUS "Compiler is part of GCC: ${CMAKE_COMPILER_IS_GNUCXX}")
-
-message(STATUS "start")
-
-
-if(WIN32)
-    set(TOOLCHAIN_SUFFIX ".exe")
-endif()
-
-set(CMAKE_SYSTEM_NAME               Generic)
-set(CMAKE_SYSTEM_PROCESSOR          arm)
-
-set(TOOLCHAIN_PREFIX                "arm-none-eabi-")
-if(DEFINED TOOLCHAIN_DIRECTORY)
-    set(TOOLCHAIN_PREFIX            "${TOOLCHAIN_DIRECTORY}/${TOOLCHAIN_PREFIX}")
-endif()
-set(FLAGS                           "-fdata-sections -ffunction-sections --specs=nano.specs -Wl,--gc-sections")
-set(ASM_FLAGS                       "-x assembler-with-cpp")
-set(CPP_FLAGS                       "-fno-rtti -fno-exceptions -fno-threadsafe-statics")
-
-set(CMAKE_C_COMPILER                ${TOOLCHAIN_PREFIX}gcc${TOOLCHAIN_SUFFIX} ${FLAGS})
-set(CMAKE_ASM_COMPILER              ${CMAKE_C_COMPILER} ${ASM_FLAGS})
-set(CMAKE_CXX_COMPILER              ${TOOLCHAIN_PREFIX}g++${TOOLCHAIN_SUFFIX} ${FLAGS} ${CPP_FLAGS})
-set(CMAKE_OBJCOPY                   ${TOOLCHAIN_PREFIX}objcopy${TOOLCHAIN_SUFFIX})
-set(CMAKE_SIZE                      ${TOOLCHAIN_PREFIX}size${TOOLCHAIN_SUFFIX})
-
-set(CMAKE_EXECUTABLE_SUFFIX_ASM     ".elf")
-set(CMAKE_EXECUTABLE_SUFFIX_C       ".elf")
-set(CMAKE_EXECUTABLE_SUFFIX_CXX     ".elf")
-
-set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+include("base_setup.cmake")
+include("cmake/gcc-arm-none-eabi.cmake")
 
 ################################## PORJECT SETUP ###############################################################
 
@@ -68,87 +10,132 @@ project(${PROJECT_NAME} 	VERSION ${VER}
 							DESCRIPTION ${DESC}
 							LANGUAGES C CXX ASM)
 
-SET(CMAKE_CXX_STANDARD ${CXX_STD_VERSION})
+# Setup compiler settings
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS ON)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS ON)
 
-message(STATUS "Compiler path: ${CMAKE_CXX_COMPILER}")
-message(STATUS "Compiler ID: ${CMAKE_CXX_COMPILER_ID}")
-message(STATUS "Compiler version: ${CMAKE_CXX_COMPILER_VERSION}")
-message(STATUS "Compiler is part of GCC: ${CMAKE_COMPILER_IS_GNUCXX}")
+# message(STATUS "Compiler path: ${CMAKE_CXX_COMPILER}")
+# message(STATUS "Compiler ID: ${CMAKE_CXX_COMPILER_ID}")
+# message(STATUS "Compiler version: ${CMAKE_CXX_COMPILER_VERSION}")
+# message(STATUS "Compiler is part of GCC: ${CMAKE_COMPILER_IS_GNUCXX}")
 
-add_executable("${PROJECT_NAME}")
+# Link directories setup
+# Must be before executable is added
+link_directories(${PROJECT_NAME} ${link_DIRS})
+
+# Create an executable object type
+add_executable(${PROJECT_NAME})
+
+# Add sources to executable
+target_sources(${PROJECT_NAME} PUBLIC ${sources_SRCS})
+
+# Add include paths
+target_include_directories(${PROJECT_NAME} PRIVATE ${include_DIRS})
 
 ################################## TARGET DEFINITIONS ###############################################################
 
 target_compile_definitions(
 	${PROJECT_NAME} PRIVATE
-	"DEBUG"
+	${symbols_SYMB}
 	${DEVICE_FAMILY}
 	${DEVICE_SERIES}
 	${DEVICE}
+	$<$<COMPILE_LANGUAGE:C>: ${symbols_c_SYMB}>
+	$<$<COMPILE_LANGUAGE:CXX>: ${symbols_cxx_SYMB}>
+	$<$<COMPILE_LANGUAGE:ASM>: ${symbols_asm_SYMB}>
+
+	# Configuration specific
+	$<$<CONFIG:Debug>:DEBUG>
+	$<$<CONFIG:Release>: >
 )
 
-################################## TARGET INCLUDE ###############################################################
+# Add linked libraries
+target_link_libraries(${PROJECT_NAME} ${link_LIBS})
 
-# file(GLOB_RECURSE HEADERS "Drivers/CMSIS/Include/*.h"  "Drivers/CMSIS/Device/ST/STM32F4xx/Include/*.h" "Drivers/src/*.hpp" "inc/*.hpp")
-# set (INCLUDE_DIRS "")
-# foreach (_headerFile ${HEADERS})
-#     get_filename_component(_dir ${_headerFile} PATH)
-#     list (APPEND INCLUDE_DIRS ${_dir})
-# endforeach()
-# list(REMOVE_DUPLICATES INCLUDE_DIRS)
+# Compiler options
+target_compile_options(${PROJECT_NAME} PRIVATE
+	${cpu_PARAMS}
+	${compiler_OPTS}
+	-Wall
+	-Wextra
+	-Wpedantic
+	-Wno-unused-parameter
+	$<$<COMPILE_LANGUAGE:C>: >
+	$<$<COMPILE_LANGUAGE:CXX>:
 
-# target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS})
-
-target_include_directories(${PROJECT_NAME} PRIVATE ${inc_dirs})
-
-
-################################## TARGET SOURCES ###############################################################
-
-set(SRCs "")
-foreach (_srcdir ${src_dirs})
-	file(GLOB _src_c ${_srcdir}/*.c ${_srcdir}/*.cpp ${_srcdir}/*.s)
-	list (APPEND SRCs ${_src_c})
-endforeach()
-
-target_sources(
-	${PROJECT_NAME} PRIVATE	${SRCs}
+	# -Wno-volatile
+	# -Wold-style-cast
+	# -Wuseless-cast
+	# -Wsuggest-override
+	>
+	$<$<COMPILE_LANGUAGE:ASM>:-x assembler-with-cpp -MMD -MP>
+	$<$<CONFIG:Debug>:-Og -g3 -ggdb>
+	$<$<CONFIG:Release>:-Og -g0>
 )
 
-################################## COMPILE OPTIONS ###############################################################
-
-target_compile_options(
-	${PROJECT_NAME} PRIVATE
-	# CPU specific
-	"-mcpu=cortex-m4"
-	"-mfloat-abi=hard"
-	"-mthumb"
-	"-mfpu=fpv4-sp-d16"
-	# Other options
-	"-g3"
-	"-c"
-	"-O0"
-	"-Wall"
-	"-Wno-deprecated"
-)
+# target_compile_options(
+# 	${PROJECT_NAME} PRIVATE
+# 	# CPU specific
+# 	"-mcpu=cortex-m4"
+# 	"-mfloat-abi=hard"
+# 	"-mthumb"
+# 	"-mfpu=fpv4-sp-d16"
+# 	# Other options
+# 	"-g3"
+# 	"-c"
+# 	"-O0"
+# 	"-Wall"
+# 	"-Wno-deprecated"
+# )
 
 ################################## LINK OPTIONS ###############################################################
 
-target_link_options(
-	${PROJECT_NAME} PRIVATE
-	"-mcpu=cortex-m4"
-	"-mfpu=fpv4-sp-d16"
-	"-mfloat-abi=hard"
+# Linker options
+target_link_options(${PROJECT_NAME} PRIVATE
+	-T${linker_script_SRC}
+	${cpu_PARAMS}
+	${linker_OPTS}
+	"-Wl,-Map=${CMAKE_PROJECT_NAME}.map"
+	"-u _printf_float" # STDIO float formatting support (remove if not used)
+	"--specs=nosys.specs"
+	"-Wl,--start-group"
+	"-lc"
+	"-lm"
+	"-lstdc++"
+	"-lsupc++"
+	"-Wl,--end-group"
+	"-Wl,-z,max-page-size=8" # Allow good software remapping across address space (with proper GCC section making)
 	"-Wl,--print-memory-usage"
-	${linker_params}
-	-T ${linker_script}
 )
+
+# target_link_options(
+# 	${PROJECT_NAME} PRIVATE
+# 	"-mcpu=cortex-m4"
+# 	"-mfpu=fpv4-sp-d16"
+# 	"-mfloat-abi=hard"
+# 	"-Wl,--print-memory-usage"
+# 	${linker_params}
+# 	-T ${linker_script}
+# )
 
 ################################## POST ###############################################################
 
-add_custom_command(
-    TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${PROJECT_NAME}>
+# Execute post-build to print size, generate hex and bin
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+	COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${CMAKE_PROJECT_NAME}>
+	COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${CMAKE_PROJECT_NAME}> ${CMAKE_PROJECT_NAME}.hex
+	COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${CMAKE_PROJECT_NAME}> ${CMAKE_PROJECT_NAME}.bin
 )
+
+
+# add_custom_command(
+#     TARGET ${PROJECT_NAME} POST_BUILD
+#     COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${PROJECT_NAME}>
+# )
 
 # add_custom_command(
 #     TARGET ${PROJECT_NAME} POST_BUILD
@@ -161,6 +148,3 @@ add_custom_command(
 #     COMMAND ${CMAKE_OBJCOPY} -O binary
 #     $<TARGET_FILE:${PROJECT_NAME}> ${PROJECT_NAME}.bin
 # )
-
-################################## POST ###############################################################
-message(STATUS "Project Name: ${PROJECT_NAME}")
