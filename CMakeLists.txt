@@ -1,14 +1,23 @@
 cmake_minimum_required(VERSION 3.22)
 ################################## BASE SETUP ###############################################################
 
-include("base_setup.cmake")
+include("./base_setup.cmake")
 include("cmake/gcc-arm-none-eabi.cmake")
 
 ################################## PORJECT SETUP ###############################################################
+if("${PROJECT_NAME}" STREQUAL "")
+	get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+	string(REPLACE " " "_" PROJECT_NAME ${PROJECT_NAME})
+	message(STATUS "Project name Not set. Use name: ${PROJECT_NAME}")
+else()
+	message(STATUS "Project name: ${PROJECT_NAME}")
+endif()
 
-project(${PROJECT_NAME} 	VERSION ${VER}
+project(${PROJECT_NAME}  	VERSION ${VER}
 							DESCRIPTION ${DESC}
 							LANGUAGES C CXX ASM)
+
+message("Build type: " ${CMAKE_BUILD_TYPE})
 
 # Setup compiler settings
 set(CMAKE_C_STANDARD 11)
@@ -25,21 +34,21 @@ set(CMAKE_CXX_EXTENSIONS ON)
 
 # Link directories setup
 # Must be before executable is added
-link_directories(${PROJECT_NAME} ${link_DIRS})
+link_directories(${CMAKE_PROJECT_NAME} ${link_DIRS})
 
 # Create an executable object type
-add_executable(${PROJECT_NAME})
+add_executable(${CMAKE_PROJECT_NAME})
 
 # Add sources to executable
-target_sources(${PROJECT_NAME} PUBLIC ${sources_SRCS})
+target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${sources_SRCS})
 
 # Add include paths
-target_include_directories(${PROJECT_NAME} PRIVATE ${include_DIRS})
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${include_DIRS})
 
 ################################## TARGET DEFINITIONS ###############################################################
 
 target_compile_definitions(
-	${PROJECT_NAME} PRIVATE
+	${CMAKE_PROJECT_NAME} PRIVATE
 	${symbols_SYMB}
 	${DEVICE_FAMILY}
 	${DEVICE_SERIES}
@@ -54,10 +63,10 @@ target_compile_definitions(
 )
 
 # Add linked libraries
-target_link_libraries(${PROJECT_NAME} ${link_LIBS})
+target_link_libraries(${CMAKE_PROJECT_NAME} ${link_LIBS})
 
 # Compiler options
-target_compile_options(${PROJECT_NAME} PRIVATE
+target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
 	${cpu_PARAMS}
 	${compiler_OPTS}
 	-Wall
@@ -95,7 +104,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 ################################## LINK OPTIONS ###############################################################
 
 # Linker options
-target_link_options(${PROJECT_NAME} PRIVATE
+target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
 	-T${linker_script_SRC}
 	${cpu_PARAMS}
 	${linker_OPTS}
@@ -125,7 +134,7 @@ target_link_options(${PROJECT_NAME} PRIVATE
 ################################## POST ###############################################################
 
 # Execute post-build to print size, generate hex and bin
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
 	COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${CMAKE_PROJECT_NAME}>
 	COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${CMAKE_PROJECT_NAME}> ${CMAKE_PROJECT_NAME}.hex
 	COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${CMAKE_PROJECT_NAME}> ${CMAKE_PROJECT_NAME}.bin

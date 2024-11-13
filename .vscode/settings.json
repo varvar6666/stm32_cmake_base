@@ -1,8 +1,4 @@
 {
-	"cmake.configureOnOpen": true,
-	"cmake.configureSettings": {
-		"prj_name": "${workspaceFolderBasename}"
-	},
 	"cortex-debug.openocdPath": "C:/openocd/bin/openocd.exe",
 	"cmake.options.statusBarVisibility": "hidden",
 	"cmake.options.advanced": {
