@@ -18,6 +18,7 @@ project(${PROJECT_NAME}  	VERSION ${VER}
 							LANGUAGES C CXX ASM)
 
 message("Build type: " ${CMAKE_BUILD_TYPE})
+message(STATUS "CMAKE Project name: ${CMAKE_PROJECT_NAME}")
 
 # Setup compiler settings
 set(CMAKE_C_STANDARD 11)

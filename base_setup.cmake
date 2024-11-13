@@ -48,6 +48,11 @@ set(sources_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/gpio.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/flash.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/rcc.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/uart.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/interface.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/dma.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/tim.cpp
+
 )
 
 # Include directories
