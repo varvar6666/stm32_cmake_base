@@ -1,38 +1,108 @@
 {
-	"cmake.configureOnOpen": true,
-	"cmake.configureSettings": {
-		"prj_name": "${workspaceFolderBasename}"
-	},
-	"cortex-debug.armToolchainPath.windows": "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/13.2 Rel1/bin",
-	"cortex-debug.stm32cubeprogrammer.windows": "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin",
-	"cortex-debug.stlinkPath.windows": "C:/ST/STM32CubeIDE_1.14.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.win32_2.1.100.202310302101/tools/bin/ST-LINK_gdbserver.exe",
 	"cortex-debug.openocdPath": "C:/openocd/bin/openocd.exe",
+	"cmake.options.statusBarVisibility": "hidden",
+	"cmake.options.advanced": {
+		"build": {
+			"statusBarVisibility": "inherit"
+		},
+		"configure": {
+			"statusBarVisibility": "visible"
+		},
+		"launch": {
+			"statusBarVisibility": "inherit"
+		},
+		"debug": {
+			"statusBarVisibility": "inherit"
+		}
+	},
 	"VsCodeTaskButtons.tasks": [
-        // {
-        //     "label": "$(checklist) Build",
-        //     "task": "Build",
-        //     "tooltip": "🛠️ Start the \"build\" task"
-        // },
 		{
-            "label": "$(clear-all) Clean build",
-            "task": "Clean project",
-            "tooltip": "🧹 Start a \"clean\" task"
-        },
+			"label": "$(run) Run",
+			"task": "Build + Flash",
+			"tooltip": "Build and run"
+		},
+		// {
+		// 	"label": "$(debug-restart-frame) Clean rebuild",
+		// 	"task": "Clean rebuild",
+		// 	"tooltip": "🛠️ Start the \"build\" task"
+		// },
+		// {
+		// 	"label": "$(checklist) Build",
+		// 	"task": "Build",
+		// 	"tooltip": "🛠️ Start the \"build\" task"
+		// },
+		// {
+		// 	"label": "$(clear-all) Clean Project",
+		// 	"task": "Clean Project",
+		// 	"tooltip": "🧹 Start a \"clean\" task"
+		// },
+		// {
+		// 	"label": "$(circuit-board) List interfaces",
+		// 	"task": "CubeProg: List all available communication interfaces",
+		// 	"tooltip": "List all available communication interfaces"
+		// },
 		{
-            "label": "$(output) Config",
-            "task": "config",
-            "tooltip": "Config"
-        },
+			"label": "$(desktop-download)  Flash project ",
+			"task": "CubeProg: Flash project (SWD)",
+			"tooltip": "List all available communication interfaces"
+		},
 		{
-            "label": "$(run) Run",
-            "task": "flash",
-            "tooltip": "Build and run"
-        },
-		{
-            "label": "$(close) Full-Erase",
-            "task": "full chip erase",
-            "tooltip": "full chip erase"
-        },
+			"label": "$(close) Full-Erase",
+			"task": "full chip erase",
+			"tooltip": "full chip erase"
+		},
+		// {
+		// 	"label": "$(output) CMake: configure",
+		// 	"task": "CMake: configure",
+		// 	"tooltip": "CMake: configure"
+		// },
 
 	],
+	"files.associations": {
+		"new": "cpp",
+		"array": "cpp",
+		"atomic": "cpp",
+		"bit": "cpp",
+		"*.tcc": "cpp",
+		"cctype": "cpp",
+		"clocale": "cpp",
+		"cmath": "cpp",
+		"compare": "cpp",
+		"concepts": "cpp",
+		"cstdarg": "cpp",
+		"cstddef": "cpp",
+		"cstdint": "cpp",
+		"cstdio": "cpp",
+		"cstdlib": "cpp",
+		"cstring": "cpp",
+		"ctime": "cpp",
+		"cwchar": "cpp",
+		"cwctype": "cpp",
+		"deque": "cpp",
+		"list": "cpp",
+		"string": "cpp",
+		"unordered_map": "cpp",
+		"vector": "cpp",
+		"exception": "cpp",
+		"algorithm": "cpp",
+		"functional": "cpp",
+		"iterator": "cpp",
+		"memory": "cpp",
+		"memory_resource": "cpp",
+		"numeric": "cpp",
+		"random": "cpp",
+		"string_view": "cpp",
+		"system_error": "cpp",
+		"tuple": "cpp",
+		"type_traits": "cpp",
+		"utility": "cpp",
+		"initializer_list": "cpp",
+		"iosfwd": "cpp",
+		"limits": "cpp",
+		"numbers": "cpp",
+		"ostream": "cpp",
+		"stdexcept": "cpp",
+		"streambuf": "cpp",
+		"typeinfo": "cpp"
+	},
 }

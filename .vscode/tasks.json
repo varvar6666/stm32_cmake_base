@@ -1,76 +1,122 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-		"label": "Build",
+	"version": "2.0.0",
+// 	"windows": {
+// 	"options": {
+// 		"shell": {
+// 			"executable": "cmd.exe", //try pwsh
+// 			"args": ["/d", "/c"]
+// 		}
+// 	}
+// },
+	"tasks": [
+// ***** Project tasks *****
+// *** Build ***
+	{
 		"type": "cmake",
+		"label": "Build",
 		"command": "build",
-		"problemMatcher": "$gcc",
-		"group": {
-		  "kind": "build",
-		  "isDefault": true
-		}
-	  },
-	  {
-		  "label": "Clean project",
-		  "type": "cmake",
-		  "command": "clean",
-		  "problemMatcher": "$gcc",
-		  "group": {
-			  "kind": "build",
-			  "isDefault": true
-		  },
-	  },
-	  {
-		  "type": "cmake",
-		  "command": "configure",
-		  "label": "config",
-		  "problemMatcher": "$gcc",
-		  "group": {
-			  "kind": "build",
-			  "isDefault": true
-		  },
-	  },
+		"targets": [
+			"all"
+		],
+		"preset": "${command:cmake.activeBuildPresetName}",
+		"group": "build",
+		"problemMatcher": [],
+		"detail": "CMake template clean rebuild task",
+	},
+// *** Clean rebuild ***
+	{
+		"type": "cmake",
+		"label": "Clean rebuild",
+		"command": "cleanRebuild",
+		"targets": [
+			"all"
+		],
+		"preset": "${command:cmake.activeBuildPresetName}",
+		"group": "build",
+		"problemMatcher": [],
+		"detail": "CMake template clean rebuild task"
+	},
+// *** Clean Project ***
+	{
+		"type": "cmake",
+		"label": "Clean Project",
+		"command": "clean",
+		"targets": [
+			"all"
+		],
+		"preset": "${command:cmake.activeBuildPresetName}",
+		"group": "build",
+		"problemMatcher": [],
+		"detail": "CMake template clean rebuild task"
+	},
+// *** Build + Flash ***
+	{
+		"label": "Build + Flash",
+		"dependsOrder": "sequence",
+		"dependsOn": [
+			"Clean rebuild",
+			"CubeProg: Flash project (SWD)",
+		]
+	},
+
+// ***** STM32_Programmer_CLI *****
+// *** List all available communication interfaces ***
 	{
 		"type": "shell",
-		"label": "flash",
+		"label": "CubeProg: List all available communication interfaces",
 		"command": "STM32_Programmer_CLI.exe",
-		"args": [
-			"\"-c port=SWD freq=4000\"",
-			"\"-w ${workspaceFolder}/build/${workspaceFolderBasename}.elf 0x0800000\"",
-			"\"-g\""
-		],
+		"args": ["--list"],
 		"options": {
-		  "cwd": "${workspaceFolder}"
+			"cwd": "${workspaceFolder}"
 		},
-		"dependsOn": "Build",
-		"problemMatcher": [],
-		"group": {
-		  "kind": "build",
-		  "isDefault": true
-		},
-		"detail": "Builds project and flashes firmware."
-  
-	  },
-	  {
+		"problemMatcher": []
+	},
+// *** Flash project ***
+	{
 		"type": "shell",
-		"label": "full chip erase",
+		"label": "CubeProg: Flash project (SWD)",
 		"command": "STM32_Programmer_CLI.exe",
 		"args": [
-			"-c port=SWD freq=4000",
-			"-e all"
+			"--connect",
+			"port=swd",
+			"--download",
+			"${command:cmake.launchTargetPath}",
+			// Let CMake extension decide executable: "${command:cmake.launchTargetPath}",
+			"-hardRst", // Hardware reset - if rst pin is connected
+			"-rst", // Software reset (backup)
+			"--start" // Start execution
+		],
+		"options": {
+			"cwd": "${workspaceFolder}"
+		},
+		"problemMatcher": []
+	},
+// *** full chip erase ***
+	{
+		"type": "shell",
+		"label": "CubeProg: Full chip erase",
+		"command": "STM32_Programmer_CLI.exe",
+		"args": [
+			"--connect",
+			"port=swd",
+			"--erase all"
 		],
 		"options": {
 		  "cwd": "${workspaceFolder}"
 		},
 		"problemMatcher": [],
-		"group": {
-			"kind": "build",
-			"isDefault": true
-		  },
 		"detail": "full chip erase"
-  
-	  },
+	},
 
-  ]
+// ***** CMake *****
+// *** configure ***
+	{
+		"type": "cmake",
+		"label": "CMake: configure",
+		"command": "configure",
+		"preset": "${command:cmake.activeConfigurePresetName}",
+		"problemMatcher": [],
+		"detail": "CMake template configure task"
+	}
+]
 }
