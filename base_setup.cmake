@@ -18,11 +18,6 @@ set(cpu_PARAMS
 	
 )
 
-# Linker script
-set(linker_script_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/stm32f446retx_FLASH.ld
-)
-
 # Compiler options 
 set(compiler_OPTS	# => target_compile_options
 )
@@ -64,18 +59,18 @@ set(symbols_c_SYMB
 
 )
 set(symbols_cxx_SYMB 
-    
+
 )
 set(symbols_asm_SYMB
-    
+
 )
 
 # Link directories
 set(link_DIRS
-    
+
 )
 
 # Link libraries
 set(link_LIBS
-    
+
 )
