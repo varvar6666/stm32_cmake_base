@@ -33,6 +33,9 @@ set(CMAKE_CXX_EXTENSIONS ON)
 # message(STATUS "Compiler version: ${CMAKE_CXX_COMPILER_VERSION}")
 # message(STATUS "Compiler is part of GCC: ${CMAKE_COMPILER_IS_GNUCXX}")
 
+#donwnload cmsis
+include("cmake/cmsis-download.cmake")
+
 # Link directories setup
 # Must be before executable is added
 link_directories(${CMAKE_PROJECT_NAME} ${link_DIRS})

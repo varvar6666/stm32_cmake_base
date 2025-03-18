@@ -60,6 +60,13 @@
 	],
 	"cortex-debug.variableUseNaturalFormat": true,
 	"files.associations": {
-		"cmath": "cpp"
+		"cmath": "cpp",
+		"deque": "cpp",
+		"list": "cpp",
+		"sint.h": "c",
+		"arm_math.h": "c",
+		"array": "cpp",
+		"string_view": "cpp",
+		"initializer_list": "cpp"
 	},
 }
