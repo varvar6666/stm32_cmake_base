@@ -1,5 +1,15 @@
 cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.22)
 ################################## BASE SETUP ###############################################################
+
+include("./base_setup.cmake")
+include("cmake/gcc-arm-none-eabi.cmake")
+
+################################## PORJECT SETUP ###############################################################
+if("${PROJECT_NAME}" STREQUAL "")
+	get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+	string(REPLACE " " "_" PROJECT_NAME ${PROJECT_NAME})
+	message(STATUS "Project name Not set. Use name: ${PROJECT_NAME}")
 
 include("./base_setup.cmake")
 include("cmake/gcc-arm-none-eabi.cmake")
@@ -11,8 +21,10 @@ if("${PROJECT_NAME}" STREQUAL "")
 	message(STATUS "Project name Not set. Use name: ${PROJECT_NAME}")
 else()
 	message(STATUS "Project name: ${PROJECT_NAME}")
+	message(STATUS "Project name: ${PROJECT_NAME}")
 endif()
 
+project(${PROJECT_NAME}  	VERSION ${VER}
 project(${PROJECT_NAME}  	VERSION ${VER}
 							DESCRIPTION ${DESC}
 							LANGUAGES C CXX ASM)

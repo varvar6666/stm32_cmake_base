@@ -15,6 +15,21 @@
 			"statusBarVisibility": "inherit"
 		}
 	},
+	"cmake.options.statusBarVisibility": "hidden",
+	"cmake.options.advanced": {
+		"build": {
+			"statusBarVisibility": "inherit"
+		},
+		"configure": {
+			"statusBarVisibility": "visible"
+		},
+		"launch": {
+			"statusBarVisibility": "inherit"
+		},
+		"debug": {
+			"statusBarVisibility": "inherit"
+		}
+	},
 	"VsCodeTaskButtons.tasks": [
 		{
 			"label": "$(run) Run",
@@ -42,6 +57,35 @@
 		// 	"tooltip": "List all available communication interfaces"
 		// },
 		{
+			"label": "$(run) Run",
+			"task": "Build + Flash",
+			"tooltip": "Build and run"
+		},
+		// {
+		// 	"label": "$(debug-restart-frame) Clean rebuild",
+		// 	"task": "Clean rebuild",
+		// 	"tooltip": "🛠️ Start the \"build\" task"
+		// },
+		// {
+		// 	"label": "$(checklist) Build",
+		// 	"task": "Build",
+		// 	"tooltip": "🛠️ Start the \"build\" task"
+		// },
+		// {
+		// 	"label": "$(clear-all) Clean Project",
+		// 	"task": "Clean Project",
+		// 	"tooltip": "🧹 Start a \"clean\" task"
+		// },
+		// {
+		// 	"label": "$(circuit-board) List interfaces",
+		// 	"task": "CubeProg: List all available communication interfaces",
+		// 	"tooltip": "List all available communication interfaces"
+		// },
+		{
+			"label": "$(desktop-download)  Flash project ",
+			"task": "CubeProg: Flash project (SWD)",
+			"tooltip": "List all available communication interfaces"
+		},
 			"label": "$(desktop-download)  Flash project ",
 			"task": "CubeProg: Flash project (SWD)",
 			"tooltip": "List all available communication interfaces"
