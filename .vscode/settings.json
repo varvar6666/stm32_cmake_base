@@ -15,7 +15,47 @@
 			"statusBarVisibility": "inherit"
 		}
 	},
+	"cmake.options.statusBarVisibility": "hidden",
+	"cmake.options.advanced": {
+		"build": {
+			"statusBarVisibility": "inherit"
+		},
+		"configure": {
+			"statusBarVisibility": "visible"
+		},
+		"launch": {
+			"statusBarVisibility": "inherit"
+		},
+		"debug": {
+			"statusBarVisibility": "inherit"
+		}
+	},
 	"VsCodeTaskButtons.tasks": [
+		{
+			"label": "$(run) Run",
+			"task": "Build + Flash",
+			"tooltip": "Build and run"
+		},
+		// {
+		// 	"label": "$(debug-restart-frame) Clean rebuild",
+		// 	"task": "Clean rebuild",
+		// 	"tooltip": "🛠️ Start the \"build\" task"
+		// },
+		// {
+		// 	"label": "$(checklist) Build",
+		// 	"task": "Build",
+		// 	"tooltip": "🛠️ Start the \"build\" task"
+		// },
+		// {
+		// 	"label": "$(clear-all) Clean Project",
+		// 	"task": "Clean Project",
+		// 	"tooltip": "🧹 Start a \"clean\" task"
+		// },
+		// {
+		// 	"label": "$(circuit-board) List interfaces",
+		// 	"task": "CubeProg: List all available communication interfaces",
+		// 	"tooltip": "List all available communication interfaces"
+		// },
 		{
 			"label": "$(run) Run",
 			"task": "Build + Flash",
@@ -46,6 +86,10 @@
 			"task": "CubeProg: Flash project (SWD)",
 			"tooltip": "List all available communication interfaces"
 		},
+			"label": "$(desktop-download)  Flash project ",
+			"task": "CubeProg: Flash project (SWD)",
+			"tooltip": "List all available communication interfaces"
+		},
 		{
 			"label": "$(close) Full-Erase",
 			"task": "full chip erase",
@@ -58,51 +102,15 @@
 		// },
 
 	],
+	"cortex-debug.variableUseNaturalFormat": false,
 	"files.associations": {
-		"new": "cpp",
-		"array": "cpp",
-		"atomic": "cpp",
-		"bit": "cpp",
-		"*.tcc": "cpp",
-		"cctype": "cpp",
-		"clocale": "cpp",
 		"cmath": "cpp",
-		"compare": "cpp",
-		"concepts": "cpp",
-		"cstdarg": "cpp",
-		"cstddef": "cpp",
-		"cstdint": "cpp",
-		"cstdio": "cpp",
-		"cstdlib": "cpp",
-		"cstring": "cpp",
-		"ctime": "cpp",
-		"cwchar": "cpp",
-		"cwctype": "cpp",
 		"deque": "cpp",
 		"list": "cpp",
-		"string": "cpp",
-		"unordered_map": "cpp",
-		"vector": "cpp",
-		"exception": "cpp",
-		"algorithm": "cpp",
-		"functional": "cpp",
-		"iterator": "cpp",
-		"memory": "cpp",
-		"memory_resource": "cpp",
-		"numeric": "cpp",
-		"random": "cpp",
+		"sint.h": "c",
+		"arm_math.h": "c",
+		"array": "cpp",
 		"string_view": "cpp",
-		"system_error": "cpp",
-		"tuple": "cpp",
-		"type_traits": "cpp",
-		"utility": "cpp",
-		"initializer_list": "cpp",
-		"iosfwd": "cpp",
-		"limits": "cpp",
-		"numbers": "cpp",
-		"ostream": "cpp",
-		"stdexcept": "cpp",
-		"streambuf": "cpp",
-		"typeinfo": "cpp"
+		"initializer_list": "cpp"
 	},
 }
