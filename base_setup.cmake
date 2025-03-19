@@ -4,15 +4,12 @@ set(VER 3.0)
 set(DESC "Base for STM32 cmake")
 set(DEVICE 	"STM32F446RE")
 
+set(USE_DRIVERS 1)
+
 # Core MCU flags, CPU, instruction set and FPU setup
 set(cpu_PARAMS
-    -mthumb
-
     # Other parameters
-    # -mcpu, -mfloat, -mfloat-abi, ...
-    -mcpu=cortex-m4	#todo set depend on dev
-	-mfpu=fpv4-sp-d16
-	-mfloat-abi=hard
+
 )
 
 # Compiler options 
@@ -50,7 +47,7 @@ set(include_DIRS
 
 	${CMAKE_CURRENT_SOURCE_DIR}/download_files/cmsis/Core/Include
 	${CMAKE_CURRENT_SOURCE_DIR}/download_files/Device/Include
-	
+
 	# ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src
 	# ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/math
 

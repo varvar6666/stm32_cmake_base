@@ -35,6 +35,7 @@ set(CMAKE_CXX_EXTENSIONS ON)
 
 #donwnload cmsis
 include("cmake/cmsis-download.cmake")
+include("cmake/set_cpu_params.cmake")
 
 # Linker script
 set(linker_script_SRC_mcu
@@ -65,13 +66,10 @@ target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${sources_SRCS})
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${include_DIRS})
 
 ################################## TARGET DEFINITIONS ###############################################################
-
 target_compile_definitions(
 	${CMAKE_PROJECT_NAME} PRIVATE
 	${symbols_SYMB}
-	${Core}
-	${Series}
-	${dev_uc}
+	${c_target}
 	$<$<COMPILE_LANGUAGE:C>: ${symbols_c_SYMB}>
 	$<$<COMPILE_LANGUAGE:CXX>: ${symbols_cxx_SYMB}>
 	$<$<COMPILE_LANGUAGE:ASM>: ${symbols_asm_SYMB}>
@@ -86,6 +84,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME} ${link_LIBS})
 
 # Compiler options
 target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
+	-mthumb
+	${main_cpu_PARAMS}
 	${cpu_PARAMS}
 	${compiler_OPTS}
 	-Wall
@@ -105,21 +105,6 @@ target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
 	$<$<CONFIG:Release>:-Og -g0>
 )
 
-# target_compile_options(
-# 	${PROJECT_NAME} PRIVATE
-# 	# CPU specific
-# 	"-mcpu=cortex-m4"
-# 	"-mfloat-abi=hard"
-# 	"-mthumb"
-# 	"-mfpu=fpv4-sp-d16"
-# 	# Other options
-# 	"-g3"
-# 	"-c"
-# 	"-O0"
-# 	"-Wall"
-# 	"-Wno-deprecated"
-# )
-
 ################################## LINK OPTIONS ###############################################################
 
 # Linker options
@@ -127,6 +112,7 @@ target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
 	-L${CMAKE_SOURCE_DIR}/download_files/linker
 	-T${linker_script_SRC_mcu}
 	-T${linker_script_SRC_common}
+	${main_cpu_PARAMS}
 	${cpu_PARAMS}
 	${linker_OPTS}
 	"-Wl,-Map=${CMAKE_PROJECT_NAME}.map"
@@ -142,16 +128,6 @@ target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
 	"-Wl,--print-memory-usage"
 )
 
-# target_link_options(
-# 	${PROJECT_NAME} PRIVATE
-# 	"-mcpu=cortex-m4"
-# 	"-mfpu=fpv4-sp-d16"
-# 	"-mfloat-abi=hard"
-# 	"-Wl,--print-memory-usage"
-# 	${linker_params}
-# 	-T ${linker_script}
-# )
-
 ################################## POST ###############################################################
 
 # Execute post-build to print size, generate hex and bin
@@ -160,21 +136,3 @@ add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
 	COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${CMAKE_PROJECT_NAME}> ${CMAKE_PROJECT_NAME}.hex
 	COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${CMAKE_PROJECT_NAME}> ${CMAKE_PROJECT_NAME}.bin
 )
-
-
-# add_custom_command(
-#     TARGET ${PROJECT_NAME} POST_BUILD
-#     COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${PROJECT_NAME}>
-# )
-
-# add_custom_command(
-#     TARGET ${PROJECT_NAME} POST_BUILD
-#     COMMAND ${CMAKE_OBJCOPY} -O ihex
-#     $<TARGET_FILE:${PROJECT_NAME}> ${PROJECT_NAME}.hex
-# )
-
-# add_custom_command(
-#     TARGET ${PROJECT_NAME} POST_BUILD
-#     COMMAND ${CMAKE_OBJCOPY} -O binary
-#     $<TARGET_FILE:${PROJECT_NAME}> ${PROJECT_NAME}.bin
-# )
