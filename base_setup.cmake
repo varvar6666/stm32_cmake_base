@@ -4,7 +4,7 @@ set(VER 3.0)
 set(DESC "Base for STM32 cmake")
 set(DEVICE 	"STM32F446RE")
 
-set(USE_DRIVERS 1)
+set(USE_DRIVERS 0)
 
 # Core MCU flags, CPU, instruction set and FPU setup
 set(cpu_PARAMS
