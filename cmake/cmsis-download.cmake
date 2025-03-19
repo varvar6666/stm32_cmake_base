@@ -26,7 +26,7 @@ message("last_letter: " ${last_letter})
 message("c_target: " ${c_target})
 
 
-file(GLOB RESULT "${CMAKE_SOURCE_DIR}/download_files/cmsis")
+file(GLOB RESULT "${CMAKE_SOURCE_DIR}/download_files/cmsis/")
 list(LENGTH RESULT RES_LEN)
 
 if(RES_LEN EQUAL 0)
@@ -35,7 +35,8 @@ if(RES_LEN EQUAL 0)
 	FetchContent_Declare(
 		cmsis
 		SOURCE_DIR ${CMAKE_SOURCE_DIR}/download_files/cmsis
-		GIT_REPOSITORY https://github.com/varvar6666/cmsis-core.git
+		GIT_REPOSITORY git@github.com:varvar6666/cmsis-core.git
+		GIT_TAG "origin/master"
 	)
 
 	FetchContent_MakeAvailable(cmsis)
@@ -265,14 +266,25 @@ endif()
 
 
 message("USE_DRIVERS = ${USE_DRIVERS}")
-if(${USE_DRIVERS} EQUAL 1)
-	message(STATUS "Downloading ARM Core" )
-	## Download ARM Core
-	FetchContent_Declare(
-		Drivers
-		SOURCE_DIR ${CMAKE_SOURCE_DIR}/Drivers
-		GIT_REPOSITORY git@github.com:varvar6666/STM32_Drivers_CPP.git
-	)
 
-	FetchContent_MakeAvailable(Drivers)
+
+
+if(${USE_DRIVERS} EQUAL 1)
+	file(GLOB RESULT "${CMAKE_SOURCE_DIR}/Drivers")
+	list(LENGTH RESULT RES_LEN)
+	
+	if(RES_LEN EQUAL 0)
+		message(STATUS "Downloading Drivers" )
+		## Download ARM Core
+		FetchContent_Declare(
+			Drivers
+			SOURCE_DIR ${CMAKE_SOURCE_DIR}/Drivers
+			GIT_REPOSITORY git@github.com:varvar6666/STM32_Drivers_CPP.git
+			GIT_TAG "origin/main"
+		)
+
+		FetchContent_MakeAvailable(Drivers)
+	else()
+		message(STATUS "Drivers Already downloaded" )
+	endif()
 endif()

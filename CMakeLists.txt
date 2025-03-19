@@ -45,11 +45,6 @@ set(linker_script_SRC_common
 	${CMAKE_SOURCE_DIR}/download_files/linker/common.ld
 )
 
-set(LD_SCRIPTS
-	${linker_script_SRC_mcu}
-	${linker_script_SRC_common}
-)
-
 # Link directories setup
 # Must be before executable is added
 link_directories(${CMAKE_PROJECT_NAME} ${link_DIRS})
@@ -70,6 +65,8 @@ target_compile_definitions(
 	${CMAKE_PROJECT_NAME} PRIVATE
 	${symbols_SYMB}
 	${c_target}
+	${dev_uc}
+	${Core}
 	$<$<COMPILE_LANGUAGE:C>: ${symbols_c_SYMB}>
 	$<$<COMPILE_LANGUAGE:CXX>: ${symbols_cxx_SYMB}>
 	$<$<COMPILE_LANGUAGE:ASM>: ${symbols_asm_SYMB}>
@@ -111,7 +108,6 @@ target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
 target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
 	-L${CMAKE_SOURCE_DIR}/download_files/linker
 	-T${linker_script_SRC_mcu}
-	-T${linker_script_SRC_common}
 	${main_cpu_PARAMS}
 	${cpu_PARAMS}
 	${linker_OPTS}

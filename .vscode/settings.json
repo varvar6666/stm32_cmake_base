@@ -58,7 +58,7 @@
 		// },
 
 	],
-	"cortex-debug.variableUseNaturalFormat": true,
+	"cortex-debug.variableUseNaturalFormat": false,
 	"files.associations": {
 		"cmath": "cpp",
 		"deque": "cpp",
