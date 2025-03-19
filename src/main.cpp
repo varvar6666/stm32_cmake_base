@@ -4,7 +4,7 @@
 
 extern "C" 
 {
-	#include "stm32f446xx.h"
+	#include "stm32f4xx.h"
 }
 // extern "C" 
 // {
@@ -30,6 +30,8 @@ extern "C"
 
 int main()
 {
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+	GPIOA->MODER |= 1 << 5*2;
 	// System::Init();
 	// ClockSystem::Init_calc_pll(180000000, ClockSystem::PLL_ClockSource::HSE, 8000000);
 	// System::Enable_CYCCNT();
@@ -48,7 +50,8 @@ int main()
 
 	for(;;)
 	{
-
+		GPIOA->ODR ^= 1 << 5;
+		for(uint32_t t = 0;t < 1000000; t++);
 		// tick_now = System::GetTick();
 		// if((tick_now - tick) > 500)
 		// {

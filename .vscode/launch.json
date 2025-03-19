@@ -19,7 +19,7 @@
 		"preLaunchTask": "Build",
 		"preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],
 		// "svdPath": "${command:vscode-embedded.st.svd}/STM32F446.svd"
-		"svdPath": "${workspaceFolder}/Drivers/SVD/STM32F4/STM32F446.svd"
+		"svdPath": "${workspaceFolder}/download_files/SVD.svd"
 	},
 	{
 		"cwd": "${workspaceFolder}",

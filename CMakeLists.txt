@@ -36,6 +36,19 @@ set(CMAKE_CXX_EXTENSIONS ON)
 #donwnload cmsis
 include("cmake/cmsis-download.cmake")
 
+# Linker script
+set(linker_script_SRC_mcu
+	${CMAKE_SOURCE_DIR}/download_files/linker/${linker_name}
+)
+set(linker_script_SRC_common
+	${CMAKE_SOURCE_DIR}/download_files/linker/common.ld
+)
+
+set(LD_SCRIPTS
+	${linker_script_SRC_mcu}
+	${linker_script_SRC_common}
+)
+
 # Link directories setup
 # Must be before executable is added
 link_directories(${CMAKE_PROJECT_NAME} ${link_DIRS})
@@ -44,6 +57,8 @@ link_directories(${CMAKE_PROJECT_NAME} ${link_DIRS})
 add_executable(${CMAKE_PROJECT_NAME})
 
 # Add sources to executable
+list(APPEND sources_SRCS ${CMAKE_SOURCE_DIR}/download_files/startup/${irq_vector})
+list(APPEND sources_SRCS ${CMAKE_SOURCE_DIR}/download_files/startup/startup_common.c)
 target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${sources_SRCS})
 
 # Add include paths
@@ -54,9 +69,9 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${include_DIRS})
 target_compile_definitions(
 	${CMAKE_PROJECT_NAME} PRIVATE
 	${symbols_SYMB}
-	${DEVICE_FAMILY}
-	${DEVICE_SERIES}
-	${DEVICE}
+	${Core}
+	${Series}
+	${dev_uc}
 	$<$<COMPILE_LANGUAGE:C>: ${symbols_c_SYMB}>
 	$<$<COMPILE_LANGUAGE:CXX>: ${symbols_cxx_SYMB}>
 	$<$<COMPILE_LANGUAGE:ASM>: ${symbols_asm_SYMB}>
@@ -109,7 +124,9 @@ target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Linker options
 target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
-	-T${linker_script_SRC}
+	-L${CMAKE_SOURCE_DIR}/download_files/linker
+	-T${linker_script_SRC_mcu}
+	-T${linker_script_SRC_common}
 	${cpu_PARAMS}
 	${linker_OPTS}
 	"-Wl,-Map=${CMAKE_PROJECT_NAME}.map"
