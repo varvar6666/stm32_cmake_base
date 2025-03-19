@@ -26,7 +26,7 @@ message("last_letter: " ${last_letter})
 message("c_target: " ${c_target})
 
 
-file(GLOB RESULT "${CMAKE_SOURCE_DIR}/download_files/cmsis/")
+file(GLOB RESULT "${CMAKE_SOURCE_DIR}/download_files/cmsis/Core/Include")
 list(LENGTH RESULT RES_LEN)
 
 if(RES_LEN EQUAL 0)
