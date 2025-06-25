@@ -40,6 +40,8 @@ if(RES_LEN EQUAL 0)
 	)
 
 	FetchContent_MakeAvailable(cmsis)
+
+	file(REMOVE_RECURSE "${CMAKE_SOURCE_DIR}/download_files/cmsis/.git")
 else()
 	message(STATUS "ARM Core already downloaded")
 endif()

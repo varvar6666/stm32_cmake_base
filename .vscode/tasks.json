@@ -63,7 +63,7 @@
 // *** List all available communication interfaces ***
 	{
 		"type": "shell",
-		"label": "CubeProg: List all available communication interfaces",
+		"label": "CubeProg: List",
 		"command": "STM32_Programmer_CLI.exe",
 		"args": ["--list"],
 		"options": {
@@ -79,6 +79,7 @@
 		"args": [
 			"--connect",
 			"port=swd",
+			// "sn=066EFF495057717867145315",
 			"--download",
 			"${command:cmake.launchTargetPath}",
 			// Let CMake extension decide executable: "${command:cmake.launchTargetPath}",
