@@ -83,7 +83,7 @@ endif()
 if(EXISTS ${CMAKE_SOURCE_DIR}/download_files/startup/startup_common.c)
 	message(STATUS "Common Startup file already downloaded")
 else()
-	file(DOWNLOAD	https://raw.githubusercontent.com/varvar6666/STM32-base_files/refs/heads/master/startup_c/startup_c_common.c
+	file(DOWNLOAD	https://raw.githubusercontent.com/varvar6666/STM32-base_files/refs/heads/master/startup_c/startup_common.c
 		STATUS DOWNLOAD_RESULT
 		${CMAKE_SOURCE_DIR}/download_files/startup/startup_common.c)
 
