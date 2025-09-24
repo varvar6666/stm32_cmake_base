@@ -7,6 +7,7 @@ message("Device_uc: " ${dev_uc})
 #string(TOLOWER ${DEVICE} ${DEVICE})
 
 string(SUBSTRING "${dev_uc}" 0 7 Core)
+string(SUBSTRING "${dev_uc}" 0 11 flash)
 string(SUBSTRING "${dev_uc}" 0 9 Model)
 string(SUBSTRING "${dev_uc}" 10 1 last_letter)
 
@@ -17,6 +18,7 @@ string(TOLOWER ${Series} Series_lc)
 set(c_target "${Model}xx") # todo choose base on core
 
 message("Core: " ${Core})
+message("flash: " ${flash})
 message("Series: " ${Series})
 message("Series_lv: " ${Series_lc})
 message("Model: " ${Model})

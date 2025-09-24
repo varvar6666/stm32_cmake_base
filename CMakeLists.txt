@@ -67,6 +67,7 @@ target_compile_definitions(
 	${c_target}
 	${dev_uc}
 	${Core}
+	${flash}
 	$<$<COMPILE_LANGUAGE:C>: ${symbols_c_SYMB}>
 	$<$<COMPILE_LANGUAGE:CXX>: ${symbols_cxx_SYMB}>
 	$<$<COMPILE_LANGUAGE:ASM>: ${symbols_asm_SYMB}>
