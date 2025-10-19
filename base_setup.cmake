@@ -2,9 +2,9 @@
 set(PROJECT_NAME ${prj_name})
 set(VER 3.0)
 set(DESC "Base for STM32 cmake")
-set(DEVICE 	"STM32F767ZIT")
+set(DEVICE 	"STM32F446ret")
 
-set(USE_DRIVERS 1)
+set(USE_DRIVERS 0) #1 - USE drivers , 0 - bare metal
 
 # Core MCU flags, CPU, instruction set and FPU setup
 set(cpu_PARAMS

@@ -1,5 +1,5 @@
 {
-	"cortex-debug.openocdPath": "C:/openocd/bin/openocd.exe",
+	"cortex-debug.stm32cubeprogrammer": "C:/ST/STM32CubeCLT_1.19.0/STM32CubeProgrammer/bin", // <--- Path to STM32CubeProgrammer installation! CHECK THIS
 	"cmake.options.statusBarVisibility": "hidden",
 	"cmake.options.advanced": {
 		"build": {
