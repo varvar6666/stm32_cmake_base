@@ -1,26 +1,51 @@
+# ================================
+# Project basic configuration
+# ================================
+
+# Имя проекта (если не задано Preset'ом)
+if(NOT DEFINED prj_name)
+	get_filename_component(prj_name "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
+endif()
 
 set(PROJECT_NAME ${prj_name})
 set(VER 3.0)
 set(DESC "Base for STM32 cmake")
-set(DEVICE 	"STM32F446ret")
 
-set(USE_DRIVERS 0) #1 - USE drivers , 0 - bare metal
+# ================================
+# MCU chip selection
+# ================================
+# DEVICE = полноценный код чипа
+# Пример: STM32F446RE, STM32F103C8, STM32G431KB
+set(DEVICE "STM32F446RE")
 
+# ================================
+# Drivers ON/OFF
+# ================================
+set(USE_DRIVERS ON)
+
+# ================================
 # Core MCU flags, CPU, instruction set and FPU setup
+# ================================
 set(cpu_PARAMS
 	# Other parameters
 )
 
+# ================================
 # Compiler options 
+# ================================
 set(compiler_OPTS	# => target_compile_options
 
 )
 
+# ================================
 # Linker options
+# ================================
 set(linker_OPTS 	# => target_link_options
 )
 
+# ================================
 # Sources
+# ================================
 set(sources_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
 
@@ -40,34 +65,30 @@ set(sources_SRCS
 
 )
 
+# ================================
 # Include directories
+# ================================
 set(include_DIRS
 	${CMAKE_CURRENT_SOURCE_DIR}/inc
 
-	${CMAKE_CURRENT_SOURCE_DIR}/download_files/cmsis/Core/Include
-	${CMAKE_CURRENT_SOURCE_DIR}/download_files/Device/Include
-
-	${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src
 	# ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/math
 )
 
-# Symbols definition
-set(symbols_c_SYMB 
+if(USE_DRIVERS)
+	list(APPEND include_DIRS
+		${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src
+	)
+endif()
 
-)
-set(symbols_cxx_SYMB 
-    
-)
-set(symbols_asm_SYMB
-    
-)
+# ================================
+# Extra user defines (если нужны)
+# ================================
+set(symbols_c_SYMB "")
+set(symbols_cxx_SYMB "")
+set(symbols_asm_SYMB "")
 
-# Link directories
-set(link_DIRS
-    
-)
-
-# Link libraries
-set(link_LIBS
-    
-)
+# ================================
+# Extra user options / libs
+# ================================
+set(link_DIRS "")
+set(link_LIBS "")
