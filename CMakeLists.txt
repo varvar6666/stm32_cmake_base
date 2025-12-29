@@ -33,9 +33,13 @@ set(CMAKE_CXX_EXTENSIONS ON)
 # message(STATUS "Compiler version: ${CMAKE_CXX_COMPILER_VERSION}")
 # message(STATUS "Compiler is part of GCC: ${CMAKE_COMPILER_IS_GNUCXX}")
 
+include("cmake/stm32-parse-device.cmake")
+
+stm32_parse_device(${DEVICE})
+
 #donwnload cmsis
 include("cmake/cmsis-download.cmake")
-include("cmake/set_cpu_params.cmake")
+
 
 # Linker script
 set(linker_script_SRC_mcu
@@ -65,9 +69,9 @@ target_compile_definitions(
 	${CMAKE_PROJECT_NAME} PRIVATE
 	${symbols_SYMB}
 	${c_target}
-	${dev_uc}
-	${Core}
-	${flash}
+	${STM32_DEVICE_UC}
+	${STM32_CORE}
+	${STM32_FLASH_def}
 	$<$<COMPILE_LANGUAGE:C>: ${symbols_c_SYMB}>
 	$<$<COMPILE_LANGUAGE:CXX>: ${symbols_cxx_SYMB}>
 	$<$<COMPILE_LANGUAGE:ASM>: ${symbols_asm_SYMB}>
