@@ -16,7 +16,7 @@ set(DESC "Base for STM32 cmake")
 # ================================
 # DEVICE = полноценный код чипа
 # Пример: STM32F446RE, STM32F103C8, STM32G431KB
-set(DEVICE "STM32F446RE")
+set(DEVICE "STM32F429zi")
 
 # ================================
 # Drivers ON/OFF
@@ -52,17 +52,16 @@ set(sources_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/no_system_files/sysmem.c
 	${CMAKE_CURRENT_SOURCE_DIR}/no_system_files/syscalls.c
 
-	${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/system.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/gpio.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/flash.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/rcc.cpp
+	# ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/system.cpp
+	# ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/gpio.cpp
+	# ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/flash.cpp
+	# ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/rcc.cpp
 	# ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/uart.cpp
 	# ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/interface.cpp
 	# ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/dma.cpp
 	# ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/src/tim.cpp
 	# ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/math/sint.c
 	# ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/FastMathFunctions/arm_sin_f32.c
-
 )
 
 # ================================

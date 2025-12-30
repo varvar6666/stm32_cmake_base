@@ -2,293 +2,225 @@ include(FetchContent)
 
 string(TOLOWER ${DEVICE} STM32_DEVICE_LC)
 string(TOUPPER ${DEVICE} STM32_DEVICE_UC)
-message("Device_lc: " ${STM32_DEVICE_LC})
-message("Device_uc: " ${STM32_DEVICE_UC})
+message(STATUS "Device_LC: " ${STM32_DEVICE_LC})
+message(STATUS "Device_UC: " ${STM32_DEVICE_UC})
 #string(TOLOWER ${DEVICE} ${DEVICE})
 
 string(SUBSTRING "${STM32_DEVICE_UC}" 0 7 STM32_CORE)
-string(SUBSTRING "${STM32_DEVICE_UC}" 0 11 STM32_FLASH_def)
-string(SUBSTRING "${STM32_DEVICE_UC}" 0 9 Model)
+string(SUBSTRING "${STM32_DEVICE_UC}" 0 11 STM32_FLASH_def) # todo
+string(SUBSTRING "${STM32_DEVICE_UC}" 0 9 STM32_MODEL_UC)
 string(SUBSTRING "${STM32_DEVICE_UC}" 10 1 last_letter)
 
-set(Series "${STM32_CORE}xx")
-set(linker_name "${Model}x${last_letter}.ld") 
-string(TOLOWER ${Model} Model_lc)
-string(TOLOWER ${Series} Series_lc)
-set(c_target "${Model}xx") # todo choose base on STM32_CORE
+set(STM32_SERIES_UC "${STM32_CORE}xx")
+set(linker_name "${STM32_MODEL_UC}x${last_letter}.ld") 
+string(TOLOWER ${STM32_MODEL_UC} STM32_MODEL_LC)
+string(TOLOWER ${STM32_SERIES_UC} STM32_SERIES_LC)
+set(c_target "${STM32_MODEL_UC}xx") # todo choose base on STM32_CORE
 
-message("STM32_CORE: 	 " ${STM32_CORE})
-message("STM32_FLASH_def:" ${STM32_FLASH_def})
-message("Series: " ${Series})
-message("Series_lv: " ${Series_lc})
-message("Model: " ${Model})
-message("Model_lc: " ${Model_lc})
-message("linker_name: " ${linker_name})
-message("last_letter: " ${last_letter})
-message("c_target: " ${c_target})
+message(STATUS "STM32_CORE: 	 " ${STM32_CORE})
+message(STATUS "STM32_FLASH_def:" ${STM32_FLASH_def})
+message(STATUS "STM32_SERIES_UC: " ${STM32_SERIES_UC})
+message(STATUS "STM32_SERIES_LC: " ${STM32_SERIES_LC})
+message(STATUS "STM32_MODEL_UC: " ${STM32_MODEL_UC})
+message(STATUS "STM32_MODEL_LC: " ${STM32_MODEL_LC})
+message(STATUS "linker_name: " ${linker_name}) # todo
+message(STATUS "last_letter: " ${last_letter}) # todo
+message(STATUS "c_target: " ${c_target})
 
 
-file(GLOB RESULT "${CMAKE_SOURCE_DIR}/download_files/cmsis/Core/Include")
-list(LENGTH RESULT RES_LEN)
+# ============================================================================================================================================
+# get name for vector table and header file
+# ============================================================================================================================================
+include(${CMAKE_SOURCE_DIR}/cmake/functions.cmake)
 
-if(RES_LEN EQUAL 0)
-	message(STATUS "Downloading ARM Core" )
-	## Download ARM Core
-	FetchContent_Declare(
-		cmsis
-		SOURCE_DIR ${CMAKE_SOURCE_DIR}/download_files/cmsis
-		GIT_REPOSITORY git@github.com:varvar6666/cmsis-core.git
-		GIT_TAG "origin/master"
+download_one(
+	"STM32-map.cmake"
+	"${CMAKE_SOURCE_DIR}/download_files/cmake"
+	"cmake/${STM32_CORE}-map.cmake")
+
+include(${CMAKE_SOURCE_DIR}/download_files/cmake/STM32-map.cmake)
+# ============================
+# lookup name
+# ============================
+list(FIND ${STM32_CORE}_MAP "${STM32_DEVICE_UC}" IDX)
+
+if(IDX LESS 0)
+  message(FATAL_ERROR "No Name for ${STM32_DEVICE_UC}")
+endif()
+
+math(EXPR IDX_NAME   "${IDX} + 1")
+math(EXPR IDX_FLASH  "${IDX} + 2")
+math(EXPR IDX_RAM    "${IDX} + 3")
+math(EXPR IDX_EXTRA  "${IDX} + 4")
+
+list(GET ${STM32_CORE}_MAP ${IDX_NAME}  STM32_NAME)
+list(GET ${STM32_CORE}_MAP ${IDX_FLASH} STM32_FLASH)
+list(GET ${STM32_CORE}_MAP ${IDX_RAM}   STM32_RAM)
+list(GET ${STM32_CORE}_MAP ${IDX_EXTRA} STM32_EXTRA)
+
+message(STATUS "STM32_NAME   = ${STM32_NAME}")
+
+# ============================================================================================================================================
+# download svd from series and model - STM32F4/STM32F4xx.svd
+# ============================================================================================================================================
+
+download_one(
+	"SVD.svd"
+	"${CMAKE_SOURCE_DIR}/download_files"
+	"SVD/${STM32_SERIES_UC}/${STM32_MODEL_UC}.svd")
+
+# ============================================================================================================================================
+# download startup and vetor files
+# ============================================================================================================================================
+
+download_one(
+	"startup_common.c"
+	"${CMAKE_SOURCE_DIR}/download_files/startup"
+	"startup_c/startup_common.c")
+
+download_one(
+	"vector_${STM32_NAME}.c"
+	"${CMAKE_SOURCE_DIR}/download_files/startup"
+	"startup_c/${STM32_SERIES_UC}/vector_${STM32_NAME}.c")
+
+# ============================================================================================================================================
+# download STM32 headers files and system files
+# ============================================================================================================================================
+
+download_one(
+	"${STM32_SERIES_LC}.h"
+	"${CMAKE_SOURCE_DIR}/download_files/Device/Include"
+	"Device/${STM32_SERIES_UC}/Include/${STM32_SERIES_LC}.h")
+
+download_one(
+	"system_${STM32_SERIES_LC}.h"
+	"${CMAKE_SOURCE_DIR}/download_files/Device/Include"
+	"Device/${STM32_SERIES_UC}/Include/system_${STM32_SERIES_LC}.h")
+
+download_one(
+	"system_${STM32_SERIES_LC}.c"
+	"${CMAKE_SOURCE_DIR}/download_files/Device/Source"
+	"Device/${STM32_SERIES_UC}/Source/system_${STM32_SERIES_LC}.c")
+
+download_one(
+	"${STM32_NAME}.h"
+	"${CMAKE_SOURCE_DIR}/download_files/Device/Include"
+	"Device/${STM32_SERIES_UC}/Include/${STM32_NAME}.h")
+
+# ============================================================================================================================================
+# Configure and download linker files
+# ============================================================================================================================================
+
+message(STATUS "Using linker script : ${LD_TEMPLATE}")
+message(STATUS "FLASH               : ${STM32_FLASH}")
+message(STATUS "RAM                 : ${STM32_RAM}")
+message(STATUS "EXTRA               : ${STM32_EXTRA}")
+
+set(FLASH_ORIGIN 0x08000000)
+set(FLASH_LENGTH ${STM32_FLASH})
+
+set(RAM_ORIGIN 0x20000000)
+set(RAM_LENGTH ${STM32_RAM})
+
+set(HEAP_SIZE 0x200)
+set(STACK_SIZE 0x400)
+
+
+if(STM32_CORE STREQUAL "STM32F7")
+	set(LD_TEMPLATE "linker-f7.ld.in")
+
+	set(ITCM_ORIGIN 0x00000000)
+	set(ITCM_LENGTH 16K)
+
+	set(DTCM_ORIGIN 0x20000000)
+	set(DTCM_LENGTH ${STM32_EXTRA})   # 64K или 128K
+
+	set(SRAM2_LENGTH 16K)
+
+	if(STM32_EXTRA STREQUAL "64K")
+		set(SRAM2_ORIGIN 0x2004C000)
+
+		set(SRAM1_ORIGIN 0x20010000)
+	elseif(STM32_EXTRA STREQUAL "128K")
+		set(SRAM2_ORIGIN 0x2007C000)
+
+		set(SRAM1_ORIGIN 0x20020000)
+	else()
+		message(FATAL_ERROR "Invalid DTCM size for F7: ${STM32_EXTRA}")
+	endif()
+
+	k_to_int("${STM32_RAM}"   RAM_K)
+	k_to_int("${DTCM_LENGTH}" DTCM_K)
+	k_to_int("${SRAM2_LENGTH}" SRAM2_K)
+
+	math(EXPR SRAM1_K
+		"${RAM_K} - ${DTCM_K} - ${SRAM2_K}"
 	)
 
-	FetchContent_MakeAvailable(cmsis)
+	set(SRAM1_LENGTH "${SRAM1_K}K")
 
-	file(REMOVE_RECURSE "${CMAKE_SOURCE_DIR}/download_files/cmsis/.git")
+elseif(STM32_CORE STREQUAL "STM32H7")
+	set(LD_TEMPLATE "linker-h7.ld.in")
+elseif(STM32_EXTRA AND NOT STM32_EXTRA STREQUAL "-" AND NOT STM32_EXTRA STREQUAL "0K")
+	set(LD_TEMPLATE "linker-ccm.ld.in")
+
+	set(CCM_ORIGIN 0x10000000)
+	set(CCM_LENGTH ${STM32_EXTRA})
+
+	k_to_int("${STM32_RAM}"   RAM_K)
+	k_to_int("${CCM_LENGTH}"  CCM_K)
+
+	math(EXPR SRAM1_K
+		"${RAM_K} - ${CCM_K}"
+	)
+
+	set(RAM_LENGTH "${SRAM1_K}K")
 else()
-	message(STATUS "ARM Core already downloaded")
+	set(LD_TEMPLATE "linker-simple.ld.in")
 endif()
 
 
-if(EXISTS ${CMAKE_SOURCE_DIR}/download_files/SVD.svd)
-	message(STATUS "SVD file already downloaded")
-else()
-	file(DOWNLOAD	https://raw.githubusercontent.com/varvar6666/STM32-base_files/refs/heads/master/SVD/${Series}/${Model}.svd
-		STATUS DOWNLOAD_RESULT
-		${CMAKE_SOURCE_DIR}/download_files/SVD.svd)
+download_one(
+	"${LD_TEMPLATE}"
+	"${CMAKE_SOURCE_DIR}/download_files/linker"
+	"linker/${LD_TEMPLATE}")
 
-	message(STATUS "Downloading SVD file Series-${Series}, ${Model}.svd -> SVD.svd. Result: ${DOWNLOAD_RESULT}" )
-endif()
+set(LD_IN  ${CMAKE_SOURCE_DIR}/download_files/linker/${LD_TEMPLATE})
+set(LD_OUT ${CMAKE_SOURCE_DIR}/download_files/linker/${STM32_DEVICE_LC}.ld)
 
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/download_files/linker/common.ld)
-	message(STATUS "Common Linker file already downloaded")
-else()
-	file(DOWNLOAD	https://raw.githubusercontent.com/varvar6666/STM32-base_files/refs/heads/master/linker/common.ld
-		STATUS DOWNLOAD_RESULT
-		${CMAKE_SOURCE_DIR}/download_files/linker/common.ld)
-
-	message(STATUS "Downloading Common Linker file. Result: ${DOWNLOAD_RESULT}" )
-endif()
+configure_file(
+  ${LD_IN}
+  ${LD_OUT}
+  @ONLY
+)
 
 
-if(EXISTS ${CMAKE_SOURCE_DIR}/download_files/linker/${linker_name})
-	message(STATUS "Linker file already downloaded")
-else()
-	file(DOWNLOAD	https://raw.githubusercontent.com/varvar6666/STM32-base_files/refs/heads/master/linker/${Series}/${linker_name}
-		STATUS DOWNLOAD_RESULT
-		${CMAKE_SOURCE_DIR}/download_files/linker/${linker_name})
-
-	message(STATUS "Downloading Linker file Series-${Series}, ${linker_name}. Result: ${DOWNLOAD_RESULT}" )
-endif()
+message(STATUS "Linker script generated: ${LD_OUT}")
 
 
-if(EXISTS ${CMAKE_SOURCE_DIR}/download_files/startup/startup_common.c)
-	message(STATUS "Common Startup file already downloaded")
-else()
-	file(DOWNLOAD	https://raw.githubusercontent.com/varvar6666/STM32-base_files/refs/heads/master/startup_c/startup_common.c
-		STATUS DOWNLOAD_RESULT
-		${CMAKE_SOURCE_DIR}/download_files/startup/startup_common.c)
-
-	message(STATUS "Downloading Common Startup file startup_common.c. Result: ${DOWNLOAD_RESULT}" )
-endif()
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/download_files/temp/startup_c)
-	message(STATUS "List of IRQ file already downloaded")
-else()
-	file(DOWNLOAD	https://raw.githubusercontent.com/varvar6666/STM32-base_files/refs/heads/master/startup_c/${Series}/files_list.txt
-		STATUS DOWNLOAD_RESULT
-		${CMAKE_SOURCE_DIR}/download_files/temp/startup_c)
-
-	message(STATUS "Downloading list of IRQ vectors ${Series}. Result: ${DOWNLOAD_RESULT}" )
-endif()
+# ============================================================================================================================================
+# Download drivers (optional)
+# ============================================================================================================================================
 
 
-file(STRINGS "${CMAKE_SOURCE_DIR}/download_files/temp/startup_c" this)
+# message("USE_DRIVERS = ${USE_DRIVERS}")
 
-set(found "")
-set(irq_vector "")
-
-while(this)
-	list(POP_FRONT this LINE)
-	if(LINE MATCHES "${Model_lc}")
-		list(APPEND found ${LINE})
-	endif()
+# if(${USE_DRIVERS} EQUAL 1)
+# 	file(GLOB RESULT "${CMAKE_SOURCE_DIR}/Drivers")
+# 	list(LENGTH RESULT RES_LEN)
 	
-endwhile(this)
+# 	if(RES_LEN EQUAL 0)
+# 		message(STATUS "Downloading Drivers" )
+# 		## Download ARM Core
+# 		FetchContent_Declare(
+# 			Drivers
+# 			SOURCE_DIR ${CMAKE_SOURCE_DIR}/Drivers
+# 			GIT_REPOSITORY git@github.com:varvar6666/STM32_Drivers_CPP.git
+# 			GIT_TAG "origin/main"
+# 		)
 
-message("Check list of IRQ vectors, found: ${found}")
-
-
-list(LENGTH found found_list_length)
-if(found_list_length EQUAL 0)
-	message(FATAL_ERROR "No IRQ vector")
-elseif(found_list_length EQUAL 1)
-	list(GET found 0 irq_vector)
-	message(STATUS "Found 1 IRQ vector - ${irq_vector}")
-else()
-	message("Found ${found_list_length} IRQ vector")
-	if(${Model_lc} STREQUAL "stm32f401")
-		if(${last_letter} STREQUAL "E")
-			list(GET found 1 irq_vector)
-		elseif(${last_letter} STREQUAL "C")
-			list(GET found 0 irq_vector)
-		else()
-			message(FATAL_ERROR "WRONG MCU")
-		endif()
-	else()
-		string(SUBSTRING "${STM32_DEVICE_LC}" 0 10 model_x)
-		while(found)
-			list(POP_FRONT found LINE)
-			if(LINE MATCHES ${model_x})
-				set(irq_vector ${LINE})
-			endif()
-		endwhile(found)
-	endif()
-
-	if("${irq_vector}" STRLESS_EQUAL "")
-		message(FATAL_ERROR "Can't find IRQ vector")
-	else()
-		message(STATUS "USE IRQ vector - ${irq_vector}")
-	endif()
-
-endif()
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/download_files/startup/${irq_vector})
-	message(STATUS "IRQ Vector file already downloaded")
-else()
-	file(DOWNLOAD	https://raw.githubusercontent.com/varvar6666/STM32-base_files/refs/heads/master/startup_c/${Series}/${irq_vector}
-		STATUS DOWNLOAD_RESULT
-		${CMAKE_SOURCE_DIR}/download_files/startup/${irq_vector})
-
-	message(STATUS "Downloading IRQ Vector Series-${Series}, ${irq_vector}. Result: ${DOWNLOAD_RESULT}" )
-endif()
-
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/download_files/Device/Include/${Series_lc}.h)
-	message(STATUS "MCU Series Header file already downloaded")
-else()
-file(DOWNLOAD
-	https://raw.githubusercontent.com/varvar6666/STM32-base_files/refs/heads/master/Device/${Series}/Include/${Series_lc}.h
-	${CMAKE_SOURCE_DIR}/download_files/Device/Include/${Series_lc}.h)
-
-	message(STATUS "Downloading MCU Series Header-${Series}, ${Series_lc}.h. Result: ${DOWNLOAD_RESULT}" )
-endif()
-
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/download_files/Device/Include/system_${Series_lc}.h)
-	message(STATUS "MCU Series system header file already downloaded")
-else()
-	file(DOWNLOAD
-		https://raw.githubusercontent.com/varvar6666/STM32-base_files/refs/heads/master/Device/${Series}/Include/system_${Series_lc}.h
-		${CMAKE_SOURCE_DIR}/download_files/Device/Include/system_${Series_lc}.h)
-
-	message(STATUS "Downloading MCU Series system header-${Series}, system_${Series_lc}.h. Result: ${DOWNLOAD_RESULT}" )
-endif()
-
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/download_files/Device/Source/system_${Series_lc}.c)
-	message(STATUS "MCU Series system source file already downloaded")
-else()
-	file(DOWNLOAD
-		https://raw.githubusercontent.com/varvar6666/STM32-base_files/refs/heads/master/Device/${Series}/Source/system_${Series_lc}.c
-		${CMAKE_SOURCE_DIR}/download_files/Device/Source/system_${Series_lc}.c)
-
-	message(STATUS "Downloading MCU Series system source-${Series}, system_${Series_lc}.c. Result: ${DOWNLOAD_RESULT}" )
-endif()
-
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/download_files/temp/headers)
-	message(STATUS "List of MCU headers file already downloaded")
-else()
-	file(DOWNLOAD	https://raw.githubusercontent.com/varvar6666/STM32-base_files/refs/heads/master/Device/${Series}/Include/files_list.txt
-		STATUS DOWNLOAD_RESULT
-		${CMAKE_SOURCE_DIR}/download_files/temp/headers)
-
-	message(STATUS "Downloading list of MCU headers ${Series}. Result: ${DOWNLOAD_RESULT}" )
-endif()
-
-
-file(STRINGS "${CMAKE_SOURCE_DIR}/download_files/temp/headers" this)
-
-set(found "")
-set(header "")
-
-while(this)
-	list(POP_FRONT this LINE)
-	if(LINE MATCHES "${Model_lc}")
-		list(APPEND found ${LINE})
-	endif()
-	
-endwhile(this)
-
-message("Check list of MCU headers, found: ${found}")
-
-
-list(LENGTH found found_list_length)
-if(found_list_length EQUAL 0)
-	message(FATAL_ERROR "No MCU Headers")
-elseif(found_list_length EQUAL 1)
-	list(GET found 0 header)
-	message(STATUS "Found 1 MCU Header - ${header}")
-else()
-	message("Found ${found_list_length} MCU Headers")
-	if(${Model_lc} STREQUAL "stm32f401")
-		if(${last_letter} STREQUAL "E")
-			list(GET found 1 header)
-		elseif(${last_letter} STREQUAL "C")
-			list(GET found 0 header)
-		else()
-			message(FATAL_ERROR "WRONG MCU")
-		endif()
-	else()
-		string(SUBSTRING "${STM32_DEVICE_LC}" 0 10 model_x)
-		while(found)
-			list(POP_FRONT found LINE)
-			if(LINE MATCHES ${model_x})
-				set(header ${LINE})
-			endif()
-		endwhile(found)
-	endif()
-
-	if("${header}" STRLESS_EQUAL "")
-		message(FATAL_ERROR "Can't find MCU Header")
-	else()
-		message(STATUS "USE Header - ${header}")
-	endif()
-
-endif()
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/download_files/Device/Include/${header})
-	message(STATUS "MCU Header file already downloaded")
-else()
-	file(DOWNLOAD	https://raw.githubusercontent.com/varvar6666/STM32-base_files/refs/heads/master/Device/${Series}/Include/${header}
-		STATUS DOWNLOAD_RESULT
-		${CMAKE_SOURCE_DIR}/download_files/Device/Include/${header})
-
-	message(STATUS "Downloading MCU Header Series-${Series}, ${header}. Result: ${DOWNLOAD_RESULT}" )
-endif()
-
-
-message("USE_DRIVERS = ${USE_DRIVERS}")
-
-
-
-if(${USE_DRIVERS} EQUAL 1)
-	file(GLOB RESULT "${CMAKE_SOURCE_DIR}/Drivers")
-	list(LENGTH RESULT RES_LEN)
-	
-	if(RES_LEN EQUAL 0)
-		message(STATUS "Downloading Drivers" )
-		## Download ARM Core
-		FetchContent_Declare(
-			Drivers
-			SOURCE_DIR ${CMAKE_SOURCE_DIR}/Drivers
-			GIT_REPOSITORY git@github.com:varvar6666/STM32_Drivers_CPP.git
-			GIT_TAG "origin/main"
-		)
-
-		FetchContent_MakeAvailable(Drivers)
-	else()
-		message(STATUS "Drivers Already downloaded" )
-	endif()
-endif()
+# 		FetchContent_MakeAvailable(Drivers)
+# 	else()
+# 		message(STATUS "Drivers Already downloaded" )
+# 	endif()
+# endif()
