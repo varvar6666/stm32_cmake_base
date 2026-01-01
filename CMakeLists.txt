@@ -28,10 +28,6 @@ message(STATUS "Project: ${PROJECT_NAME}")
 message(STATUS "Device: ${DEVICE}")
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-include("cmake/stm32-parse-device.cmake")
-
-stm32_parse_device(${DEVICE})
-
 ############################# MCU / CPU parameters + CMSIS ##################################
 #donwnload cmsis
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/cmsis-download.cmake")
