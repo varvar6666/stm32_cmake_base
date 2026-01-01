@@ -1,4 +1,8 @@
 include(FetchContent)
+include(${CMAKE_SOURCE_DIR}/cmake/functions.cmake)
+
+string(SUBSTRING "${DEVICE}" 0 11 DEVICE)
+
 
 string(TOLOWER ${DEVICE} STM32_DEVICE_LC)
 string(TOUPPER ${DEVICE} STM32_DEVICE_UC)
@@ -27,18 +31,63 @@ message(STATUS "linker_name: " ${linker_name}) # todo
 message(STATUS "last_letter: " ${last_letter}) # todo
 message(STATUS "c_target: " ${c_target})
 
+# ==========================================
+# STM32 device consistency check
+# ==========================================
+
+if(NOT DEFINED STM32_CONFIGURED_DEVICE)
+  # First configuration
+  message(STATUS
+    "Initial STM32 configuration for device: ${DEVICE}"
+  )
+
+  set(STM32_CONFIGURED_DEVICE
+      "${DEVICE}"
+      CACHE STRING
+      "STM32 device this build directory was configured for"
+  )
+
+else()
+	# Reconfiguration
+	if(NOT STM32_CONFIGURED_DEVICE STREQUAL DEVICE)
+		message(WARNING
+		"STM32 device changed:\n"
+		"  old: ${STM32_CONFIGURED_DEVICE}\n"
+		"  new: ${DEVICE}\n"
+		"Cleaning downloaded STM32 files."
+		)
+
+		file(REMOVE_RECURSE
+		${CMAKE_SOURCE_DIR}/cmsis-core/download_files
+		)
+
+		# Clean build artifacts
+		stm32_clean_build_dir()
+
+		set(STM32_CONFIGURED_DEVICE
+			"${DEVICE}"
+			CACHE STRING
+			"STM32 device this build directory was configured for"
+			FORCE
+		)
+	else()
+		message(STATUS
+		"STM32 device unchanged: ${DEVICE}"
+		)
+	endif()
+endif()
+
+
 
 # ============================================================================================================================================
 # get name for vector table and header file
 # ============================================================================================================================================
-include(${CMAKE_SOURCE_DIR}/cmake/functions.cmake)
-
 download_one(
 	"STM32-map.cmake"
-	"${CMAKE_SOURCE_DIR}/download_files/cmake"
+	"${CMAKE_SOURCE_DIR}/cmsis-core/download_files/cmake"
 	"cmake/${STM32_CORE}-map.cmake")
 
-include(${CMAKE_SOURCE_DIR}/download_files/cmake/STM32-map.cmake)
+include(${CMAKE_SOURCE_DIR}/cmsis-core/download_files/cmake/STM32-map.cmake)
 # ============================
 # lookup name
 # ============================
@@ -66,7 +115,7 @@ message(STATUS "STM32_NAME   = ${STM32_NAME}")
 
 download_one(
 	"SVD.svd"
-	"${CMAKE_SOURCE_DIR}/download_files"
+	"${CMAKE_SOURCE_DIR}/cmsis-core/download_files"
 	"SVD/${STM32_SERIES_UC}/${STM32_MODEL_UC}.svd")
 
 # ============================================================================================================================================
@@ -75,12 +124,12 @@ download_one(
 
 download_one(
 	"startup_common.c"
-	"${CMAKE_SOURCE_DIR}/download_files/startup"
+	"${CMAKE_SOURCE_DIR}/cmsis-core/download_files/startup"
 	"startup_c/startup_common.c")
 
 download_one(
 	"vector_${STM32_NAME}.c"
-	"${CMAKE_SOURCE_DIR}/download_files/startup"
+	"${CMAKE_SOURCE_DIR}/cmsis-core/download_files/startup"
 	"startup_c/${STM32_SERIES_UC}/vector_${STM32_NAME}.c")
 
 # ============================================================================================================================================
@@ -89,22 +138,22 @@ download_one(
 
 download_one(
 	"${STM32_SERIES_LC}.h"
-	"${CMAKE_SOURCE_DIR}/download_files/Device/Include"
+	"${CMAKE_SOURCE_DIR}/cmsis-core/download_files/Device/Include"
 	"Device/${STM32_SERIES_UC}/Include/${STM32_SERIES_LC}.h")
 
 download_one(
 	"system_${STM32_SERIES_LC}.h"
-	"${CMAKE_SOURCE_DIR}/download_files/Device/Include"
+	"${CMAKE_SOURCE_DIR}/cmsis-core/download_files/Device/Include"
 	"Device/${STM32_SERIES_UC}/Include/system_${STM32_SERIES_LC}.h")
 
 download_one(
 	"system_${STM32_SERIES_LC}.c"
-	"${CMAKE_SOURCE_DIR}/download_files/Device/Source"
+	"${CMAKE_SOURCE_DIR}/cmsis-core/download_files/Device/Source"
 	"Device/${STM32_SERIES_UC}/Source/system_${STM32_SERIES_LC}.c")
 
 download_one(
 	"${STM32_NAME}.h"
-	"${CMAKE_SOURCE_DIR}/download_files/Device/Include"
+	"${CMAKE_SOURCE_DIR}/cmsis-core/download_files/Device/Include"
 	"Device/${STM32_SERIES_UC}/Include/${STM32_NAME}.h")
 
 # ============================================================================================================================================
@@ -182,11 +231,11 @@ endif()
 
 download_one(
 	"${LD_TEMPLATE}"
-	"${CMAKE_SOURCE_DIR}/download_files/linker"
+	"${CMAKE_SOURCE_DIR}/cmsis-core/download_files/linker"
 	"linker/${LD_TEMPLATE}")
 
-set(LD_IN  ${CMAKE_SOURCE_DIR}/download_files/linker/${LD_TEMPLATE})
-set(LD_OUT ${CMAKE_SOURCE_DIR}/download_files/linker/${STM32_DEVICE_LC}.ld)
+set(LD_IN  ${CMAKE_SOURCE_DIR}/cmsis-core/download_files/linker/${LD_TEMPLATE})
+set(LD_OUT ${CMAKE_SOURCE_DIR}/cmsis-core/download_files/linker/${STM32_DEVICE_LC}.ld)
 
 configure_file(
   ${LD_IN}

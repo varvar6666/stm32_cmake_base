@@ -1,101 +1,69 @@
 {
-	"cortex-debug.stm32cubeprogrammer": "C:/ST/STM32CubeCLT_1.19.0/STM32CubeProgrammer/bin", // <--- Path to STM32CubeProgrammer installation! CHECK THIS
-	"cmake.options.statusBarVisibility": "hidden",
-	"cmake.options.advanced": {
-		"build": {
-			"statusBarVisibility": "inherit"
-		},
-		"configure": {
-			"statusBarVisibility": "visible"
-		},
-		"launch": {
-			"statusBarVisibility": "inherit"
-		},
-		"debug": {
-			"statusBarVisibility": "inherit"
-		}
-	},
-	"VsCodeTaskButtons.tasks": [
-		{
-			"label": "$(run) Run",
-			"task": "Build + Flash",
-			"tooltip": "Build and run"
-		},
-		{
-			"label": "$(debug-restart-frame) Clean rebuild",
-			"task": "Clean rebuild",
-			"tooltip": "🛠️ Start the \"build\" task"
-		},
-		// {
-		// 	"label": "$(checklist) Build",
-		// 	"task": "Build",
-		// 	"tooltip": "🛠️ Start the \"build\" task"
-		// },
-		// {
-		// 	"label": "$(clear-all) Clean Project",
-		// 	"task": "Clean Project",
-		// 	"tooltip": "🧹 Start a \"clean\" task"
-		// },
-		// {
-		// 	"label": "$(circuit-board) List interfaces",
-		// 	"task": "CubeProg: List all available communication interfaces",
-		// 	"tooltip": "List all available communication interfaces"
-		// },
-		// {
-		// 	"label": "$(debug-restart-frame) Clean rebuild",
-		// 	"task": "Clean rebuild",
-		// 	"tooltip": "🛠️ Start the \"build\" task"
-		// },
-		// {
-		// 	"label": "$(checklist) Build",
-		// 	"task": "Build",
-		// 	"tooltip": "🛠️ Start the \"build\" task"
-		// },
-		// {
-		// 	"label": "$(clear-all) Clean Project",
-		// 	"task": "Clean Project",
-		// 	"tooltip": "🧹 Start a \"clean\" task"
-		// },
-		// {
-		// 	"label": "$(circuit-board) List interfaces",
-		// 	"task": "CubeProg: List all available communication interfaces",
-		// 	"tooltip": "List all available communication interfaces"
-		// },
-		{
-			"label": "$(desktop-download)  Flash project ",
-			"task": "CubeProg: Flash project (SWD)",
-			"tooltip": "List all available communication interfaces"
-		},
-		{
-			"label": "$(close) Full-Erase",
-			"task": "full chip erase",
-			"tooltip": "full chip erase"
-		},
-		{
-			"label": "$(list) List interfaces",
-			"task": "CubeProg: List",
-			"tooltip": "List all available communication interfaces"
-		},
-		{
-			"label": "$(output) CMake: configure",
-			"task": "CMake: configure",
-			"tooltip": "CMake: configure"
-		},
+  "cortex-debug.stm32cubeprogrammer": "C:/ST/STM32CubeCLT_1.19.0/STM32CubeProgrammer/bin",
 
-	],
-	"cortex-debug.variableUseNaturalFormat": false,
-	"files.associations": {
-		"cmath": "cpp",
-		"deque": "cpp",
-		"list": "cpp",
-		"sint.h": "c",
-		"arm_math.h": "c",
-		"array": "cpp",
-		"string_view": "cpp",
-		"initializer_list": "cpp",
-		"string": "cpp",
-		"iosfwd": "cpp",
-		"limits": "cpp",
-		"streambuf": "cpp"
-	},
+  "cmake.options.statusBarVisibility": "hidden",
+  "cmake.options.advanced": {
+    "build": {
+      "statusBarVisibility": "inherit"
+    },
+    "configure": {
+      "statusBarVisibility": "visible"
+    },
+    "launch": {
+      "statusBarVisibility": "inherit"
+    },
+    "debug": {
+      "statusBarVisibility": "inherit"
+    }
+  },
+
+  "VsCodeTaskButtons.tasks": [
+    {
+      "label": "$(run) Run",
+      "task": "Build + Flash",
+      "tooltip": "Clean rebuild, flash to STM32 and start execution"
+    },
+    {
+      "label": "$(debug-restart-frame) CMake: Clean rebuild",
+      "task": "CMake: Clean rebuild",
+      "tooltip": "Clean and rebuild project using CMake"
+    },
+    {
+      "label": "$(desktop-download) STM32Prog: Flash",
+      "task": "STM32Prog: Flash project (SWD)",
+      "tooltip": "Flash current ELF to STM32 via SWD"
+    },
+    {
+      "label": "$(close) STM32Prog: Full erase",
+      "task": "STM32Prog: Full chip erase",
+      "tooltip": "Perform full chip erase via SWD"
+    },
+    {
+      "label": "$(list) STM32Prog: List",
+      "task": "STM32Prog: List interfaces",
+      "tooltip": "List available STM32 programmer interfaces"
+    },
+    {
+      "label": "$(output) CMake: Configure",
+      "task": "CMake: Configure",
+      "tooltip": "Run CMake configure using active preset"
+    }
+  ],
+
+  "cortex-debug.variableUseNaturalFormat": false,
+
+  "files.associations": {
+    "cmath": "cpp",
+    "deque": "cpp",
+    "list": "cpp",
+    "sint.h": "c",
+    "arm_math.h": "c",
+    "array": "cpp",
+    "string_view": "cpp",
+    "initializer_list": "cpp",
+    "string": "cpp",
+    "iosfwd": "cpp",
+    "limits": "cpp",
+    "streambuf": "cpp"
+  }
 }

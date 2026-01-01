@@ -43,3 +43,20 @@ function(k_to_int K_STR OUT)
 	string(REPLACE "K" "" _K "${K_STR}")
 	set(${OUT} ${_K} PARENT_SCOPE)
 endfunction()
+
+function(stm32_clean_build_dir)
+	message(STATUS "Cleaning build directory (except CMakeCache.txt)")
+
+	file(GLOB BUILD_FILES
+		"${CMAKE_BINARY_DIR}/*"
+	)
+
+	foreach(item IN LISTS BUILD_FILES)
+		get_filename_component(name "${item}" NAME)
+
+		if(NOT name STREQUAL "CMakeCache.txt"
+		AND NOT name STREQUAL "CMakeFiles")
+		file(REMOVE_RECURSE "${item}")
+		endif()
+	endforeach()
+endfunction()

@@ -35,22 +35,21 @@ stm32_parse_device(${DEVICE})
 ############################# MCU / CPU parameters + CMSIS ##################################
 #donwnload cmsis
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/cmsis-download.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/cmake/set-cpu-params.cmake")
 
 # Linker script
 set(linker_script_SRC
-	${CMAKE_SOURCE_DIR}/download_files/linker/${STM32_DEVICE_LC}.ld
+	${CMAKE_SOURCE_DIR}/cmsis-core/download_files/linker/${STM32_DEVICE_LC}.ld
 )
 # Add sources to executable
 list(APPEND sources_SRCS 
-	${CMAKE_SOURCE_DIR}/download_files/startup/vector_${STM32_NAME}.c
-	${CMAKE_SOURCE_DIR}/download_files/startup/startup_common.c
+	${CMAKE_SOURCE_DIR}/cmsis-core/download_files/startup/vector_${STM32_NAME}.c
+	${CMAKE_SOURCE_DIR}/cmsis-core/download_files/startup/startup_common.c
 )
 
 # Include CMSIS / Device paths
 list(APPEND include_DIRS
 	${CMAKE_SOURCE_DIR}/cmsis-core/Include
-	${CMAKE_SOURCE_DIR}/download_files/Device/Include
+	${CMAKE_SOURCE_DIR}/cmsis-core/download_files/Device/Include
 )
 
 ################################## TARGET DEFINITIONS ###############################################################

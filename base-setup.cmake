@@ -16,7 +16,7 @@ set(DESC "Base for STM32 cmake")
 # ================================
 # DEVICE = полноценный код чипа
 # Пример: STM32F446RE, STM32F103C8, STM32G431KB
-set(DEVICE "STM32F429zi")
+set(DEVICE "STM32F446re")
 
 # ================================
 # Drivers ON/OFF
