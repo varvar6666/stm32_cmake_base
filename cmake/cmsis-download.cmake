@@ -255,7 +255,7 @@ message(STATUS "USE_DRIVERS = ${USE_DRIVERS}")
 
 if(USE_DRIVERS)
 
-	if(NOT EXISTS "${CMAKE_SOURCE_DIR}/Drivers/CMakeLists.txt")
+	if(NOT EXISTS "${CMAKE_SOURCE_DIR}/Drivers/ReadMe.md") # todo
 		message(STATUS "Drivers not found, downloading...")
 
 		include(FetchContent)
@@ -273,5 +273,9 @@ if(USE_DRIVERS)
 		message(STATUS "Drivers already present")
 	endif()
 
-endif()
+else()
+	file(REMOVE_RECURSE
+		${CMAKE_SOURCE_DIR}/Drivers
+	)
 
+endif()
