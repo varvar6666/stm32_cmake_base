@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 ################################## BASE SETUP ###############################################################
-include("${CMAKE_CURRENT_SOURCE_DIR}/base_setup.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/base-setup.cmake")
 
 # Toolchain
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/gcc-arm-none-eabi.cmake")
@@ -28,29 +28,28 @@ message(STATUS "Project: ${PROJECT_NAME}")
 message(STATUS "Device: ${DEVICE}")
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
+include("cmake/stm32-parse-device.cmake")
+
+stm32_parse_device(${DEVICE})
+
 ############################# MCU / CPU parameters + CMSIS ##################################
 #donwnload cmsis
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/cmsis-download.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/cmake/set_cpu_params.cmake")
 
 # Linker script
-set(linker_script_SRC_mcu # todo
-	${CMAKE_SOURCE_DIR}/download_files/linker/${linker_name}
+set(linker_script_SRC
+	${CMAKE_SOURCE_DIR}/cmsis-core/download_files/linker/${STM32_DEVICE_LC}.ld
 )
-set(linker_script_SRC_common
-	${CMAKE_SOURCE_DIR}/download_files/linker/common.ld
-)
-
 # Add sources to executable
 list(APPEND sources_SRCS 
-	${CMAKE_SOURCE_DIR}/download_files/startup/${irq_vector}
-	${CMAKE_SOURCE_DIR}/download_files/startup/startup_common.c
+	${CMAKE_SOURCE_DIR}/cmsis-core/download_files/startup/vector_${STM32_NAME}.c
+	${CMAKE_SOURCE_DIR}/cmsis-core/download_files/startup/startup_common.c
 )
 
 # Include CMSIS / Device paths
 list(APPEND include_DIRS
-	${CMAKE_SOURCE_DIR}/download_files/cmsis/Core/Include
-	${CMAKE_SOURCE_DIR}/download_files/Device/Include
+	${CMAKE_SOURCE_DIR}/cmsis-core/Include
+	${CMAKE_SOURCE_DIR}/cmsis-core/download_files/Device/Include
 )
 
 ################################## TARGET DEFINITIONS ###############################################################
@@ -61,9 +60,9 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${include_DIRS})
 target_compile_definitions( ${CMAKE_PROJECT_NAME} PRIVATE
 	${symbols_SYMB}
 	${c_target}
-	${dev_uc}
-	${Core}
-	${flash}
+	${STM32_DEVICE_UC}
+	${STM32_CORE}
+	${STM32_FLASH_def}
 	$<$<COMPILE_LANGUAGE:C>: ${symbols_c_SYMB}>
 	$<$<COMPILE_LANGUAGE:CXX>: ${symbols_cxx_SYMB}>
 	$<$<COMPILE_LANGUAGE:ASM>: ${symbols_asm_SYMB}>
@@ -92,8 +91,7 @@ target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
 target_link_libraries(${CMAKE_PROJECT_NAME} ${link_LIBS})
 
 target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
-	-L${CMAKE_SOURCE_DIR}/download_files/linker
-	-T${linker_script_SRC_mcu}
+	-T${linker_script_SRC}
 	${main_cpu_PARAMS}
 	${cpu_PARAMS}
 	${linker_OPTS}

@@ -16,8 +16,8 @@ int main()
 	// uint32_t tick = System::GetTick();
 	// uint32_t tick_now;
 	// char str[20] = {};
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
-	GPIOA->MODER |= 1 << 2*5;
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
+	GPIOB->MODER |= 1 << 2*7;
 
 	for(;;)
 	{
@@ -29,7 +29,7 @@ int main()
 			// NUCLEO_LED.TogglePin_BB();
 		// }
 
-		GPIOA->ODR ^= 1 << 5;
+		GPIOB->ODR ^= 1 << 7;
 		for(uint32_t i = 0;i<1600000;i++){};
 	}
 }
