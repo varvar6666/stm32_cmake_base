@@ -251,25 +251,27 @@ message(STATUS "Linker script generated: ${LD_OUT}")
 # Download drivers (optional)
 # ============================================================================================================================================
 
+message(STATUS "USE_DRIVERS = ${USE_DRIVERS}")
 
-# message("USE_DRIVERS = ${USE_DRIVERS}")
+if(USE_DRIVERS)
 
-# if(${USE_DRIVERS} EQUAL 1)
-# 	file(GLOB RESULT "${CMAKE_SOURCE_DIR}/Drivers")
-# 	list(LENGTH RESULT RES_LEN)
-	
-# 	if(RES_LEN EQUAL 0)
-# 		message(STATUS "Downloading Drivers" )
-# 		## Download ARM Core
-# 		FetchContent_Declare(
-# 			Drivers
-# 			SOURCE_DIR ${CMAKE_SOURCE_DIR}/Drivers
-# 			GIT_REPOSITORY git@github.com:varvar6666/STM32_Drivers_CPP.git
-# 			GIT_TAG "origin/main"
-# 		)
+	if(NOT EXISTS "${CMAKE_SOURCE_DIR}/Drivers/CMakeLists.txt")
+		message(STATUS "Drivers not found, downloading...")
 
-# 		FetchContent_MakeAvailable(Drivers)
-# 	else()
-# 		message(STATUS "Drivers Already downloaded" )
-# 	endif()
-# endif()
+		include(FetchContent)
+
+		FetchContent_Declare(
+		Drivers
+		SOURCE_DIR    ${CMAKE_SOURCE_DIR}/Drivers
+		GIT_REPOSITORY git@github.com:varvar6666/STM32_Drivers_CPP.git
+		GIT_TAG        main
+		)
+
+		FetchContent_MakeAvailable(Drivers)
+
+	else()
+		message(STATUS "Drivers already present")
+	endif()
+
+endif()
+
