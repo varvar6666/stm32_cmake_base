@@ -246,6 +246,42 @@ configure_file(
 
 message(STATUS "Linker script generated: ${LD_OUT}")
 
+# ============================================================================================================================================
+# Generate flash sector map header
+# ============================================================================================================================================
+
+# Families with single/dual variants: F4, F7, G4, H7
+# Families with xl variant:           F1 (XL-density, >512K)
+# All others:                         one template, no suffix
+set(_dual_families STM32F4 STM32F7 STM32G4 STM32H7)
+list(FIND _dual_families "${STM32_CORE}" _dual_idx)
+
+k_to_int("${STM32_FLASH}" _flash_kb)
+
+if(_dual_idx GREATER_EQUAL 0)
+	if(STM32_DUAL_BANK)
+		set(FLASH_TEMPLATE_NAME "${STM32_CORE}_flash_config_dual.h.in")
+	else()
+		set(FLASH_TEMPLATE_NAME "${STM32_CORE}_flash_config_single.h.in")
+	endif()
+elseif(STM32_CORE STREQUAL "STM32F1" AND _flash_kb GREATER 512)
+	set(FLASH_TEMPLATE_NAME "STM32F1_flash_config_xl.h.in")
+else()
+	set(FLASH_TEMPLATE_NAME "${STM32_CORE}_flash_config.h.in")
+endif()
+
+download_one(
+	"${FLASH_TEMPLATE_NAME}"
+	"${CMAKE_SOURCE_DIR}/cmsis-core/download_files/cmake"
+	"cmake/${FLASH_TEMPLATE_NAME}")
+
+stm32_generate_flash_config(
+	"${STM32_CORE}"
+	"${STM32_FLASH}"
+	"${STM32_DEVICE_UC}"
+	"${CMAKE_SOURCE_DIR}/cmsis-core/download_files/cmake/${FLASH_TEMPLATE_NAME}"
+	"${CMAKE_SOURCE_DIR}/cmsis-core/download_files/Device/Include/flash_config.h"
+)
 
 # ============================================================================================================================================
 # Download drivers (optional)
