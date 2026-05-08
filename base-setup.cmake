@@ -21,7 +21,7 @@ set(DEVICE "STM32F446re")
 # ================================
 # Drivers ON/OFF
 # ================================
-set(USE_DRIVERS ON)
+set(USE_DRIVERS OFF)
 
 # ================================
 # Core MCU flags, CPU, instruction set and FPU setup
