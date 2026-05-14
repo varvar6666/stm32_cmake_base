@@ -21,7 +21,7 @@ set(DEVICE "STM32F429zi")
 # ================================
 # Drivers ON/OFF
 # ================================
-set(USE_DRIVERS OFF)
+set(USE_DRIVERS ON)
 
 # ================================
 # Core MCU flags, CPU, instruction set and FPU setup
