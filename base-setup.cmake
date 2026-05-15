@@ -16,7 +16,7 @@ set(DESC "Base for STM32 cmake")
 # ================================
 # DEVICE = полноценный код чипа
 # Пример: STM32F446RE, STM32F103C8, STM32G431KB
-set(DEVICE "STM32F429zi")
+set(DEVICE "STM32F446re")
 
 # ================================
 # Drivers ON/OFF
@@ -42,6 +42,12 @@ set(compiler_OPTS	# => target_compile_options
 # ================================
 set(linker_OPTS 	# => target_link_options
 )
+
+# ================================
+# Memory layout (heap / stack)
+# ================================
+set(HEAP_SIZE  0x200)   # _Min_Heap_Size
+set(STACK_SIZE 0x400)   # _Min_Stack_Size
 
 # ================================
 # Sources
