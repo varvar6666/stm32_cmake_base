@@ -91,8 +91,10 @@ target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
 	${main_cpu_PARAMS}
 	${cpu_PARAMS}
 	${linker_OPTS}
+	"-Wl,--gc-sections"
 	"-Wl,-Map=${CMAKE_PROJECT_NAME}.map"
-	"-u _printf_float" # STDIO float formatting support (remove if not used)
+	# "-u _printf_float" # STDIO float formatting support (remove if not used)
+	"--specs=nano.specs"
 	"--specs=nosys.specs"
 	"-Wl,--start-group"
 	"-lc"
@@ -101,6 +103,7 @@ target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
 	"-lsupc++"
 	"-Wl,--end-group"
 	"-Wl,-z,max-page-size=8" # Allow good software remapping across address space (with proper GCC section making)
+	"-Wl,--wrap=__register_exitproc" # Wrap exit to prevent it from being called by C++ static destructors, which can cause issues in embedded environments without an OS
 	"-Wl,--print-memory-usage"
 )
 
