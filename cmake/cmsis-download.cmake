@@ -19,7 +19,6 @@ set(STM32_SERIES_UC "${STM32_CORE}xx")
 set(linker_name "${STM32_MODEL_UC}x${last_letter}.ld") 
 string(TOLOWER ${STM32_MODEL_UC} STM32_MODEL_LC)
 string(TOLOWER ${STM32_SERIES_UC} STM32_SERIES_LC)
-set(c_target "${STM32_MODEL_UC}xx") # todo choose base on STM32_CORE
 
 message(STATUS "STM32_CORE: 	 " ${STM32_CORE})
 message(STATUS "STM32_FLASH_def:" ${STM32_FLASH_def})
@@ -29,7 +28,6 @@ message(STATUS "STM32_MODEL_UC: " ${STM32_MODEL_UC})
 message(STATUS "STM32_MODEL_LC: " ${STM32_MODEL_LC})
 message(STATUS "linker_name: " ${linker_name}) # todo
 message(STATUS "last_letter: " ${last_letter}) # todo
-message(STATUS "c_target: " ${c_target})
 
 # ==========================================
 # STM32 device consistency check
@@ -107,7 +105,11 @@ list(GET ${STM32_CORE}_MAP ${IDX_FLASH} STM32_FLASH)
 list(GET ${STM32_CORE}_MAP ${IDX_RAM}   STM32_RAM)
 list(GET ${STM32_CORE}_MAP ${IDX_EXTRA} STM32_EXTRA)
 
+string(TOUPPER "${STM32_NAME}" c_target)
+string(REPLACE "X" "x" c_target "${c_target}")
+
 message(STATUS "STM32_NAME   = ${STM32_NAME}")
+message(STATUS "c_target     = ${c_target}")
 
 # ============================================================================================================================================
 # download svd from series and model - STM32F4/STM32F4xx.svd
