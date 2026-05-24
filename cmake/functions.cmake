@@ -180,6 +180,15 @@ function(stm32_generate_irq_handlers VECTOR_FILE TEMPLATE OUT_FILE)
 	list(LENGTH _all_entries _total)
 	math(EXPR IRQ_TABLE_SIZE "${_total} - 16")
 
+	# Max handlers sharing one IRQ line — depends on MCU family
+	if(STM32_SERIES_UC MATCHES "STM32G0")
+		set(IRQ_MAX_SHARED 3)   # DMA1_Ch4_5_DMAMUX1_OVR: ch4 + ch5 + DMAMUX OVR
+	elseif(STM32_SERIES_UC MATCHES "STM32(F4|F7)")
+		set(IRQ_MAX_SHARED 2)   # timer pairs; DMA streams have own vectors
+	else()
+		set(IRQ_MAX_SHARED 2)   # safe default
+	endif()
+
 	file(STRINGS "${VECTOR_FILE}" _handler_lines
 		 REGEX "void [A-Za-z0-9_]+_IRQHandler\\(void\\)")
 
@@ -199,5 +208,5 @@ function(stm32_generate_irq_handlers VECTOR_FILE TEMPLATE OUT_FILE)
 
 	configure_file("${TEMPLATE}" "${OUT_FILE}" @ONLY)
 
-	message(STATUS "IRQ registry generated: ${OUT_FILE}  (IRQ_TABLE_SIZE=${IRQ_TABLE_SIZE})")
+	message(STATUS "IRQ registry generated: ${OUT_FILE}  (IRQ_TABLE_SIZE=${IRQ_TABLE_SIZE}, IRQ_MAX_SHARED=${IRQ_MAX_SHARED})")
 endfunction()
